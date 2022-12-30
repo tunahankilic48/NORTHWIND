@@ -18,7 +18,6 @@ namespace NORTHWND.Forms
             InitializeComponent();
             _frm = frm;
         }
-        SqlConnection con = new SqlConnection("Server=DESKTOP-A10URF2\\SQLEXPRESS;Database=NORTHWND;Trusted_Connection=True;");
 
         ErrorProvider erpSupplierID = new ErrorProvider(), erpCompanyName = new ErrorProvider(), erpPhone = new ErrorProvider();
 
@@ -26,7 +25,7 @@ namespace NORTHWND.Forms
 
         void ListTheDataonDataGridView()
         {
-            SqlCommand cmd = new SqlCommand("select * from Shippers", con);
+            SqlCommand cmd = new SqlCommand("select * from Shippers", Connection.con);
             SqlDataAdapter da = new SqlDataAdapter(cmd);
             DataTable dt = new DataTable();
             da.Fill(dt);
@@ -67,11 +66,11 @@ namespace NORTHWND.Forms
             if (!(txtPhone.Text.Length > 24) && !(txtCompanyName.Text.Length > 40) && !string.IsNullOrEmpty(txtCompanyName.Text))
             {
 
-                SqlCommand cmd = new SqlCommand("insert into Shippers (CompanyName, Phone) values (@companyName, @phone)", con);
+                SqlCommand cmd = new SqlCommand("insert into Shippers (CompanyName, Phone) values (@companyName, @phone)", Connection.con);
                 cmd.Parameters.AddWithValue("@companyName", txtCompanyName.Text);
                 cmd.Parameters.AddWithValue("@phone", txtPhone.Text);
-                if (con.State == ConnectionState.Closed)
-                    con.Open();
+                if (Connection.con.State == ConnectionState.Closed)
+                    Connection.con.Open();
                 try
                 {
                     DialogResult dialogResult = MessageBox.Show($"Are You Sure Adding {txtCompanyName.Text}", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -91,7 +90,7 @@ namespace NORTHWND.Forms
                 }
                 finally
                 {
-                    con.Close();
+                    Connection.con.Close();
                     ListTheDataonDataGridView();
                     CleanTheControls();
                 }
@@ -114,10 +113,10 @@ namespace NORTHWND.Forms
         {
             if (!string.IsNullOrEmpty(txtShipperID.Text))
             {
-                SqlCommand cmd = new SqlCommand("delete from Shippers where ShipperID = @shipperID", con);
+                SqlCommand cmd = new SqlCommand("delete from Shippers where ShipperID = @shipperID", Connection.con);
                 cmd.Parameters.AddWithValue("@shipperID", int.Parse(txtShipperID.Text));
-                if (con.State == ConnectionState.Closed)
-                    con.Open();
+                if (Connection.con.State == ConnectionState.Closed)
+                    Connection.con.Open();
                 try
                 {
                     DialogResult dialogResult = MessageBox.Show($"Are You Sure Delete {txtCompanyName.Text}", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -137,7 +136,7 @@ namespace NORTHWND.Forms
                 }
                 finally
                 {
-                    con.Close();
+                    Connection.con.Close();
                     ListTheDataonDataGridView();
                     CleanTheControls();
                 }
@@ -154,12 +153,12 @@ namespace NORTHWND.Forms
         {
             if (!(txtPhone.Text.Length > 24) && !(txtCompanyName.Text.Length > 40) && !string.IsNullOrEmpty(txtCompanyName.Text) && !string.IsNullOrEmpty(txtShipperID.Text))
             {
-                SqlCommand cmd = new SqlCommand("update Shippers set CompanyName = @companyName, Phone = @phone where ShipperID = @shipperID", con);
+                SqlCommand cmd = new SqlCommand("update Shippers set CompanyName = @companyName, Phone = @phone where ShipperID = @shipperID", Connection.con);
                 cmd.Parameters.AddWithValue("@shipperID", int.Parse(txtShipperID.Text));
                 cmd.Parameters.AddWithValue("@companyName", txtCompanyName.Text);
                 cmd.Parameters.AddWithValue("@phone", txtPhone.Text);
-                if (con.State == ConnectionState.Closed)
-                    con.Open();
+                if (Connection.con.State == ConnectionState.Closed)
+                    Connection.con.Open();
                 try
                 {
                     DialogResult dialogResult = MessageBox.Show($"Are You Sure Update {txtCompanyName.Text}", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -179,7 +178,7 @@ namespace NORTHWND.Forms
                 }
                 finally
                 {
-                    con.Close();
+                    Connection.con.Close();
                     ListTheDataonDataGridView();
                     CleanTheControls();
                 }

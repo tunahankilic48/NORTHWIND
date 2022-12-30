@@ -9,11 +9,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+
 namespace NORTHWND.Forms
 {
     public partial class frmCategories : Form
     {
-        SqlConnection con = new SqlConnection("Server=DESKTOP-A10URF2\\SQLEXPRESS;Database=NORTHWND;Trusted_Connection=True;");
         ErrorProvider erpCategoryID = new ErrorProvider();
         private frmHomePage _frm;
 
@@ -24,7 +24,7 @@ namespace NORTHWND.Forms
         }
         void ListTheDataonDataGridView()
         {
-            SqlCommand cmd = new SqlCommand("select CategoryID, CategoryName, Description from Categories", con);
+            SqlCommand cmd = new SqlCommand("select CategoryID, CategoryName, Description from Categories", Connection.con);
             SqlDataAdapter da = new SqlDataAdapter(cmd);
             DataTable dt = new DataTable();
             da.Fill(dt);
@@ -57,11 +57,11 @@ namespace NORTHWND.Forms
 
             if (!(txtCategoryName.Text.Length > 15 || string.IsNullOrEmpty(txtCategoryName.Text)))
             {
-                SqlCommand cmd = new SqlCommand("insert into Categories (CategoryName, Description) values (@CategoryName, @Description)", con);
+                SqlCommand cmd = new SqlCommand("insert into Categories (CategoryName, Description) values (@CategoryName, @Description)", Connection.con);
                 cmd.Parameters.AddWithValue("@CategoryName", txtCategoryName.Text);
                 cmd.Parameters.AddWithValue("@Description", txtDescription.Text);
-                if (con.State == ConnectionState.Closed)
-                    con.Open();
+                if (Connection.con.State == ConnectionState.Closed)
+                    Connection.con.Open();
                 try
                 {
                     DialogResult dialogResult = MessageBox.Show($"Are You Sure Adding {txtCategoryName.Text}", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -79,7 +79,7 @@ namespace NORTHWND.Forms
                 }
                 finally
                 {
-                    con.Close();
+                    Connection.con.Close();
                     ListTheDataonDataGridView();
                     CleanTheControls();
                 }
@@ -93,10 +93,10 @@ namespace NORTHWND.Forms
         {
             if (!string.IsNullOrEmpty(txtCategoryID.Text))
             {
-                SqlCommand cmd = new SqlCommand("delete from Categories where CategoryID = @categoryID", con);
+                SqlCommand cmd = new SqlCommand("delete from Categories where CategoryID = @categoryID", Connection.con);
                 cmd.Parameters.AddWithValue("@categoryID", int.Parse(txtCategoryID.Text));
-                if (con.State == ConnectionState.Closed)
-                    con.Open();
+                if (Connection.con.State == ConnectionState.Closed)
+                    Connection.con.Open();
                 try
                 {
                     DialogResult dialogResult = MessageBox.Show($"Are You Sure Deleting {txtCategoryName.Text}", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -114,7 +114,7 @@ namespace NORTHWND.Forms
                 }
                 finally
                 {
-                    con.Close();
+                    Connection.con.Close();
                     ListTheDataonDataGridView();
                     CleanTheControls();
                 }
@@ -127,12 +127,12 @@ namespace NORTHWND.Forms
         {
             if (!(txtCategoryName.Text.Length > 15 || string.IsNullOrEmpty(txtCategoryName.Text)) && !string.IsNullOrEmpty(txtCategoryID.Text))
             {
-                SqlCommand cmd = new SqlCommand("update Categories set CategoryName = @categoryName, Description = @description where CategoryID = @categoryID", con);
+                SqlCommand cmd = new SqlCommand("update Categories set CategoryName = @categoryName, Description = @description where CategoryID = @categoryID", Connection.con);
                 cmd.Parameters.AddWithValue("@categoryID", int.Parse(txtCategoryID.Text));
                 cmd.Parameters.AddWithValue("@CategoryName", txtCategoryName.Text);
                 cmd.Parameters.AddWithValue("@Description", txtDescription.Text);
-                if (con.State == ConnectionState.Closed)
-                    con.Open();
+                if (Connection.con.State == ConnectionState.Closed)
+                    Connection.con.Open();
                 try
                 {
                     DialogResult dialogResult = MessageBox.Show($"Are You Sure Updating {txtCategoryName.Text}", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -150,7 +150,7 @@ namespace NORTHWND.Forms
                 }
                 finally
                 {
-                    con.Close();
+                    Connection.con.Close();
                     ListTheDataonDataGridView();
                     CleanTheControls();
                 }
@@ -170,7 +170,7 @@ namespace NORTHWND.Forms
                 if (int.TryParse(txtCategoryIDSearch.Text, out int categoryID))
                 {
                     erpCategoryID.Clear();
-                    SqlCommand cmd = new SqlCommand("select CategoryID, CategoryName, Description from Categories where CategoryID = @categoryID", con);
+                    SqlCommand cmd = new SqlCommand("select CategoryID, CategoryName, Description from Categories where CategoryID = @categoryID", Connection.con);
                     cmd.Parameters.AddWithValue("@categoryID", categoryID);
                     SqlDataAdapter da = new SqlDataAdapter(cmd);
                     DataTable dt = new DataTable();
@@ -184,7 +184,7 @@ namespace NORTHWND.Forms
             }
             else if (rdbName.Checked)
             {
-                SqlCommand cmd1 = new SqlCommand("select CategoryID, CategoryName, Description from Categories where CategoryName like @categoryName ", con);
+                SqlCommand cmd1 = new SqlCommand("select CategoryID, CategoryName, Description from Categories where CategoryName like @categoryName ", Connection.con);
                 cmd1.Parameters.AddWithValue("@categoryName", "%" + txtCategoryNameSearch.Text + "%");
                 SqlDataAdapter da1 = new SqlDataAdapter(cmd1);
                 DataTable dt1 = new DataTable();
@@ -193,7 +193,7 @@ namespace NORTHWND.Forms
             }
             else if (rdbDescription.Checked)
             {
-                SqlCommand cmd2 = new SqlCommand("select CategoryID, CategoryName, Description from Categories where Description like @description ", con);
+                SqlCommand cmd2 = new SqlCommand("select CategoryID, CategoryName, Description from Categories where Description like @description ", Connection.con);
                 cmd2.Parameters.AddWithValue("@description", "%" + txtDescriptionSearch.Text + "%");
                 SqlDataAdapter da2 = new SqlDataAdapter(cmd2);
                 DataTable dt2 = new DataTable();

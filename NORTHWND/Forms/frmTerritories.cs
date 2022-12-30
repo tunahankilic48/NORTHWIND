@@ -19,15 +19,13 @@ namespace NORTHWND.Forms
             _frm = frm;
         }
 
-        SqlConnection con = new SqlConnection("Server=DESKTOP-A10URF2\\SQLEXPRESS;Database=NORTHWND;Trusted_Connection=True;");
-
         ErrorProvider erpTerritoryID = new ErrorProvider(), erpTerritoryDescription = new ErrorProvider();
 
         private frmHomePage _frm;
 
         void ListTheDataonDataGridView()
         {
-            SqlCommand cmd = new SqlCommand("select TerritoryID, TerritoryDescription, RegionDescription, t.RegionID from Territories as t join Region as r on t.RegionID = r.RegionID", con);
+            SqlCommand cmd = new SqlCommand("select TerritoryID, TerritoryDescription, RegionDescription, t.RegionID from Territories as t join Region as r on t.RegionID = r.RegionID", Connection.con);
             SqlDataAdapter da = new SqlDataAdapter(cmd);
             DataTable dt = new DataTable();
             da.Fill(dt);
@@ -36,7 +34,7 @@ namespace NORTHWND.Forms
         }
         void FillcbbRegion()
         {
-            SqlCommand cmd = new SqlCommand("Select RegionID, RegionDescription from Region order by RegionDescription", con);
+            SqlCommand cmd = new SqlCommand("Select RegionID, RegionDescription from Region order by RegionDescription", Connection.con);
             SqlDataAdapter da = new SqlDataAdapter(cmd);
             DataTable dt = new DataTable();
             da.Fill(dt);
@@ -46,7 +44,7 @@ namespace NORTHWND.Forms
         }
         void FillcbbRegionSearch()
         {
-            SqlCommand cmd = new SqlCommand("Select RegionID, RegionDescription from Region order by RegionDescription", con);
+            SqlCommand cmd = new SqlCommand("Select RegionID, RegionDescription from Region order by RegionDescription", Connection.con);
             SqlDataAdapter da = new SqlDataAdapter(cmd);
             DataTable dt = new DataTable();
             da.Fill(dt);
@@ -105,12 +103,12 @@ namespace NORTHWND.Forms
         {
             if (!string.IsNullOrEmpty(txtTerritoryID.Text) && !(txtTerritoryID.Text.Length > 20) && !string.IsNullOrEmpty(txtTerritoryDescription.Text) && !(txtTerritoryDescription.Text.Length > 50))
             {
-                SqlCommand cmd = new SqlCommand("insert into Territories (TerritoryID, TerritoryDescription, RegionID) values (@territoryID, @territoryDescription, @regionID)", con);
+                SqlCommand cmd = new SqlCommand("insert into Territories (TerritoryID, TerritoryDescription, RegionID) values (@territoryID, @territoryDescription, @regionID)", Connection.con);
                 cmd.Parameters.AddWithValue("@territoryID", txtTerritoryID.Text);
                 cmd.Parameters.AddWithValue("@territoryDescription", txtTerritoryDescription.Text);
                 cmd.Parameters.AddWithValue("@regionID", cbbRegion.SelectedValue);
-                if (con.State == ConnectionState.Closed)
-                    con.Open();
+                if (Connection.con.State == ConnectionState.Closed)
+                    Connection.con.Open();
                 try
                 {
                     DialogResult dialogResult = MessageBox.Show($"Are You Sure Adding {txtTerritoryDescription.Text}", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -130,7 +128,7 @@ namespace NORTHWND.Forms
                 }
                 finally
                 {
-                    con.Close();
+                    Connection.con.Close();
                     ListTheDataonDataGridView();
                     CleanTheControls();
                 }
@@ -148,10 +146,10 @@ namespace NORTHWND.Forms
         {
             if (!string.IsNullOrEmpty(txtTerritoryID.Text))
             {
-                SqlCommand cmd = new SqlCommand("delete from Territories where TerritoryID = @territoryID", con);
+                SqlCommand cmd = new SqlCommand("delete from Territories where TerritoryID = @territoryID", Connection.con);
                 cmd.Parameters.AddWithValue("@territoryID", txtTerritoryID.Text);
-                if (con.State == ConnectionState.Closed)
-                    con.Open();
+                if (Connection.con.State == ConnectionState.Closed)
+                    Connection.con.Open();
                 try
                 {
                     DialogResult dialogResult = MessageBox.Show($"Are You Sure Delete {txtTerritoryDescription.Text}", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -171,7 +169,7 @@ namespace NORTHWND.Forms
                 }
                 finally
                 {
-                    con.Close();
+                    Connection.con.Close();
                     ListTheDataonDataGridView();
                     CleanTheControls();
                 }
@@ -187,12 +185,12 @@ namespace NORTHWND.Forms
         {
             if (!string.IsNullOrEmpty(txtTerritoryID.Text) && !(txtTerritoryID.Text.Length > 20) && !string.IsNullOrEmpty(txtTerritoryDescription.Text) && !(txtTerritoryDescription.Text.Length > 50))
             {
-                SqlCommand cmd = new SqlCommand("update Territories set TerritoryDescription = @territoryDescription, RegionID = @regionID where TerritoryID = @territoryID", con);
+                SqlCommand cmd = new SqlCommand("update Territories set TerritoryDescription = @territoryDescription, RegionID = @regionID where TerritoryID = @territoryID", Connection.con);
                 cmd.Parameters.AddWithValue("@territoryID", txtTerritoryID.Text);
                 cmd.Parameters.AddWithValue("@territoryDescription", txtTerritoryDescription.Text);
                 cmd.Parameters.AddWithValue("@regionID", cbbRegion.SelectedValue);
-                if (con.State == ConnectionState.Closed)
-                    con.Open();
+                if (Connection.con.State == ConnectionState.Closed)
+                    Connection.con.Open();
                 try
                 {
                     DialogResult dialogResult = MessageBox.Show($"Are You Sure Update {txtTerritoryDescription.Text}", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -212,7 +210,7 @@ namespace NORTHWND.Forms
                 }
                 finally
                 {
-                    con.Close();
+                    Connection.con.Close();
                     ListTheDataonDataGridView();
                     CleanTheControls();
                 }
@@ -258,7 +256,7 @@ namespace NORTHWND.Forms
         {
             if (rdbID.Checked)
             {
-                SqlCommand cmd = new SqlCommand("select TerritoryID, TerritoryDescription, RegionDescription, t.RegionID from Territories as t join Region as r on t.RegionID = r.RegionID where TerritoryID like @territoryID", con);
+                SqlCommand cmd = new SqlCommand("select TerritoryID, TerritoryDescription, RegionDescription, t.RegionID from Territories as t join Region as r on t.RegionID = r.RegionID where TerritoryID like @territoryID", Connection.con);
                 cmd.Parameters.AddWithValue("@territoryID", "%" + txtTerritoryIDSearch.Text + "%");
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
@@ -268,7 +266,7 @@ namespace NORTHWND.Forms
             }
             else if (rdbDescription.Checked)
             {
-                SqlCommand cmd = new SqlCommand("select TerritoryID, TerritoryDescription, RegionDescription, t.RegionID from Territories as t join Region as r on t.RegionID = r.RegionID where TerritoryDescription like @territoryDescription", con);
+                SqlCommand cmd = new SqlCommand("select TerritoryID, TerritoryDescription, RegionDescription, t.RegionID from Territories as t join Region as r on t.RegionID = r.RegionID where TerritoryDescription like @territoryDescription", Connection.con);
                 cmd.Parameters.AddWithValue("@territoryDescription", "%" + txtTerritoryDescriptionSearch.Text + "%");
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
@@ -278,7 +276,7 @@ namespace NORTHWND.Forms
             }
             else if (rdbRegion.Checked)
             {
-                SqlCommand cmd = new SqlCommand("select TerritoryID, TerritoryDescription, RegionDescription, t.RegionID from Territories as t join Region as r on t.RegionID = r.RegionID where t.RegionID = @regionID", con);
+                SqlCommand cmd = new SqlCommand("select TerritoryID, TerritoryDescription, RegionDescription, t.RegionID from Territories as t join Region as r on t.RegionID = r.RegionID where t.RegionID = @regionID", Connection.con);
                 cmd.Parameters.AddWithValue("@regionID", cbbRegionSearch.SelectedValue);
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataTable dt = new DataTable();

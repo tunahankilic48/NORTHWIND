@@ -18,12 +18,11 @@ namespace NORTHWND.Forms
             InitializeComponent();
             _frm = frm;
         }
-        SqlConnection con = new SqlConnection("Server=DESKTOP-A10URF2\\SQLEXPRESS;Database=NORTHWND;Trusted_Connection=True;");
         private frmHomePage _frm;
 
         void ListTheDataonDataGridView()
         {
-            SqlCommand cmd = new SqlCommand("select * from Customers", con);
+            SqlCommand cmd = new SqlCommand("select * from Customers", Connection.con);
             SqlDataAdapter da = new SqlDataAdapter(cmd);
             DataTable dt = new DataTable();
             da.Fill(dt);
@@ -43,6 +42,7 @@ namespace NORTHWND.Forms
         {
 
             ListTheDataonDataGridView();
+            CleanTheControls();
 
         }
 
@@ -71,7 +71,7 @@ namespace NORTHWND.Forms
         {
             if (!(txtFax.Text.Length > 24 || txtPhone.Text.Length > 24 || txtCountry.Text.Length > 15 || txtPostalCode.Text.Length > 10 || txtRegion.Text.Length > 15 || txtCity.Text.Length > 15 || txtAddress.Text.Length > 60 || txtContactTitle.Text.Length > 30 || txtContactName.Text.Length > 30 || txtCompanyName.Text.Length > 40 || txtCustomerID.Text.Length != 5 || string.IsNullOrEmpty(txtCustomerID.Text) || string.IsNullOrEmpty(txtCompanyName.Text)))
             {
-                SqlCommand cmd = new SqlCommand("insert into Customers (CustomerID, CompanyName, ContactName, ContactTitle, Address, City, Region, PostalCode, Country, Phone, Fax) values (@customerID, @companyName, @contactName, @contactTitle, @address, @city, @region, @postalCode, @Country, @phone, @fax)", con);
+                SqlCommand cmd = new SqlCommand("insert into Customers (CustomerID, CompanyName, ContactName, ContactTitle, Address, City, Region, PostalCode, Country, Phone, Fax) values (@customerID, @companyName, @contactName, @contactTitle, @address, @city, @region, @postalCode, @Country, @phone, @fax)", Connection.con);
                 cmd.Parameters.AddWithValue("@customerID", txtCustomerID.Text.ToUpper());
                 cmd.Parameters.AddWithValue("@companyName", txtCompanyName.Text);
                 cmd.Parameters.AddWithValue("@contactName", txtContactName.Text);
@@ -83,8 +83,8 @@ namespace NORTHWND.Forms
                 cmd.Parameters.AddWithValue("@country", txtCountry.Text);
                 cmd.Parameters.AddWithValue("@phone", txtPhone.Text);
                 cmd.Parameters.AddWithValue("@fax", txtFax.Text);
-                if (con.State == ConnectionState.Closed)
-                    con.Open();
+                if (Connection.con.State == ConnectionState.Closed)
+                    Connection.con.Open();
                 try
                 {
                     DialogResult dialogResult = MessageBox.Show($"Are You Sure Adding {txtCustomerID.Text}", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -104,7 +104,7 @@ namespace NORTHWND.Forms
                 }
                 finally
                 {
-                    con.Close();
+                    Connection.con.Close();
                     ListTheDataonDataGridView();
                     CleanTheControls();
                 }
@@ -125,10 +125,10 @@ namespace NORTHWND.Forms
         {
             if (!(string.IsNullOrEmpty(txtCustomerID.Text)))
             {
-                SqlCommand cmd = new SqlCommand("delete from Customers where CustomerID = @customerID", con);
+                SqlCommand cmd = new SqlCommand("delete from Customers where CustomerID = @customerID", Connection.con);
                 cmd.Parameters.AddWithValue("@customerID", txtCustomerID.Text.ToUpper());
-                if (con.State == ConnectionState.Closed)
-                    con.Open();
+                if (Connection.con.State == ConnectionState.Closed)
+                    Connection.con.Open();
                 try
                 {
                     DialogResult dialogResult = MessageBox.Show($"Are You Sure Deleting {txtCustomerID.Text}", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -148,7 +148,7 @@ namespace NORTHWND.Forms
                 }
                 finally
                 {
-                    con.Close();
+                    Connection.con.Close();
                     ListTheDataonDataGridView();
                     CleanTheControls();
                 }
@@ -164,7 +164,7 @@ namespace NORTHWND.Forms
         {
             if (!(txtFax.Text.Length > 24 || txtPhone.Text.Length > 24 || txtCountry.Text.Length > 15 || txtPostalCode.Text.Length > 10 || txtRegion.Text.Length > 15 || txtCity.Text.Length > 15 || txtAddress.Text.Length > 60 || txtContactTitle.Text.Length > 30 || txtContactName.Text.Length > 30 || txtCompanyName.Text.Length > 40 || txtCustomerID.Text.Length != 5 || string.IsNullOrEmpty(txtCustomerID.Text) || string.IsNullOrEmpty(txtCompanyName.Text)))
             {
-                SqlCommand cmd = new SqlCommand("update Customers set CompanyName = @companyName, ContactName = @contactName, ContactTitle = @contactTitle, Address = @address, City = @city, Region = @region, PostalCode = @postalCode, Country = @country, Phone = @phone, Fax = @fax where CustomerID = @customerID", con);
+                SqlCommand cmd = new SqlCommand("update Customers set CompanyName = @companyName, ContactName = @contactName, ContactTitle = @contactTitle, Address = @address, City = @city, Region = @region, PostalCode = @postalCode, Country = @country, Phone = @phone, Fax = @fax where CustomerID = @customerID", Connection.con);
                 cmd.Parameters.AddWithValue("@customerID", txtCustomerID.Text.ToUpper());
                 cmd.Parameters.AddWithValue("@companyName", txtCompanyName.Text);
                 cmd.Parameters.AddWithValue("@contactName", txtContactName.Text);
@@ -176,8 +176,8 @@ namespace NORTHWND.Forms
                 cmd.Parameters.AddWithValue("@country", txtCountry.Text);
                 cmd.Parameters.AddWithValue("@phone", txtPhone.Text);
                 cmd.Parameters.AddWithValue("@fax", txtFax.Text);
-                if (con.State == ConnectionState.Closed)
-                    con.Open();
+                if (Connection.con.State == ConnectionState.Closed)
+                    Connection.con.Open();
                 try
                 {
                     DialogResult dialogResult = MessageBox.Show($"Are You Sure Update {txtCustomerID.Text}", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -197,7 +197,7 @@ namespace NORTHWND.Forms
                 }
                 finally
                 {
-                    con.Close();
+                    Connection.con.Close();
                     ListTheDataonDataGridView();
                     CleanTheControls();
                 }
@@ -222,7 +222,7 @@ namespace NORTHWND.Forms
         {
             if (rdbCustomerID.Checked)
             {
-                SqlCommand cmd = new SqlCommand("select * from Customers where CustomerID = @customerID", con);
+                SqlCommand cmd = new SqlCommand("select * from Customers where CustomerID = @customerID", Connection.con);
                 cmd.Parameters.AddWithValue("@customerID", txtCustomerIDSearch.Text);
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
@@ -231,7 +231,7 @@ namespace NORTHWND.Forms
             }
             else if (rdbCompanyName.Checked)
             {
-                SqlCommand cmd1 = new SqlCommand("select * from Customers where CompanyName like @companyName", con);
+                SqlCommand cmd1 = new SqlCommand("select * from Customers where CompanyName like @companyName", Connection.con);
                 cmd1.Parameters.AddWithValue("@companyName", "%" + txtCompanyNameSearch.Text + "%");
                 SqlDataAdapter da1 = new SqlDataAdapter(cmd1);
                 DataTable dt1 = new DataTable();
@@ -240,7 +240,7 @@ namespace NORTHWND.Forms
             }
             else if (rdbPhone.Checked)
             {
-                SqlCommand cmd2 = new SqlCommand("select * from Customers where Phone like @phone", con);
+                SqlCommand cmd2 = new SqlCommand("select * from Customers where Phone like @phone", Connection.con);
                 cmd2.Parameters.AddWithValue("@phone", "%" + txtPhoneSearch.Text + "%");
                 SqlDataAdapter da2 = new SqlDataAdapter(cmd2);
                 DataTable dt2 = new DataTable();
@@ -249,7 +249,7 @@ namespace NORTHWND.Forms
             }
             else if (rdbCity.Checked)
             {
-                SqlCommand cmd3 = new SqlCommand("select * from Customers where City like @city", con);
+                SqlCommand cmd3 = new SqlCommand("select * from Customers where City like @city", Connection.con);
                 cmd3.Parameters.AddWithValue("@city", "%" + txtCitySearch.Text + "%");
                 SqlDataAdapter da3 = new SqlDataAdapter(cmd3);
                 DataTable dt3 = new DataTable();
@@ -258,7 +258,7 @@ namespace NORTHWND.Forms
             }
             else if (rdbCountry.Checked)
             {
-                SqlCommand cmd4 = new SqlCommand("select * from Customers where Country like @country", con);
+                SqlCommand cmd4 = new SqlCommand("select * from Customers where Country like @country", Connection.con);
                 cmd4.Parameters.AddWithValue("@country", "%" + txtCountrySearch.Text + "%");
                 SqlDataAdapter da4 = new SqlDataAdapter(cmd4);
                 DataTable dt4 = new DataTable();
@@ -267,7 +267,7 @@ namespace NORTHWND.Forms
             }
             else if (rdbRegion.Checked)
             {
-                SqlCommand cmd5 = new SqlCommand("select * from Customers where Region like @region", con);
+                SqlCommand cmd5 = new SqlCommand("select * from Customers where Region like @region", Connection.con);
                 cmd5.Parameters.AddWithValue("@region", "%" + txtRegionSearch.Text + "%");
                 SqlDataAdapter da5 = new SqlDataAdapter(cmd5);
                 DataTable dt5 = new DataTable();

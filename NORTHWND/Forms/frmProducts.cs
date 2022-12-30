@@ -13,16 +13,11 @@ namespace NORTHWND.Forms
 {
     public partial class frmProducts : Form
     {
-        // to do kısıtlama
-        // to do combobox isim getirme
-        // to do arama kısmı ekle
         public frmProducts(frmHomePage frm)
         {
             InitializeComponent();
             _frm = frm;
         }
-
-        SqlConnection con = new SqlConnection("Server=DESKTOP-A10URF2\\SQLEXPRESS;Database=NORTHWND;Encrypt=false;Trusted_Connection=True;");
 
         ErrorProvider erpProductName = new ErrorProvider(), erpQuantityperUnit = new ErrorProvider(), erpUnitPrice = new ErrorProvider(), erpUnitsinStock = new ErrorProvider(), erpUnitsonOrder = new ErrorProvider(), erpReorderLevel = new ErrorProvider(), erpProductID = new ErrorProvider(), erpDiscontinued = new ErrorProvider();
 
@@ -30,7 +25,7 @@ namespace NORTHWND.Forms
 
         void ListTheDataonDataGridView()
         {
-            SqlCommand cmd = new SqlCommand("select ProductID, ProductName, s.CompanyName as Supplier, c.CategoryName, QuantityPerUnit, UnitPrice, UnitsInStock, UnitsOnOrder, ReorderLevel, Discontinued, p.SupplierID, p.CategoryID from Products as p join Suppliers as s on p.SupplierID = s.SupplierID join Categories as c on p.CategoryID = c.CategoryID", con);
+            SqlCommand cmd = new SqlCommand("select ProductID, ProductName, s.CompanyName as Supplier, c.CategoryName, QuantityPerUnit, UnitPrice, UnitsInStock, UnitsOnOrder, ReorderLevel, Discontinued, p.SupplierID, p.CategoryID from Products as p join Suppliers as s on p.SupplierID = s.SupplierID join Categories as c on p.CategoryID = c.CategoryID", Connection.con);
             SqlDataAdapter da = new SqlDataAdapter(cmd);
             DataTable dt = new DataTable();
             da.Fill(dt);
@@ -40,7 +35,7 @@ namespace NORTHWND.Forms
         }
         void FillcbbSupplier()
         {
-            SqlCommand cmd = new SqlCommand("Select SupplierID, CompanyName from Suppliers order by CompanyName", con);
+            SqlCommand cmd = new SqlCommand("Select SupplierID, CompanyName from Suppliers order by CompanyName", Connection.con);
             SqlDataAdapter da = new SqlDataAdapter(cmd);
             DataTable dt = new DataTable();
             da.Fill(dt);
@@ -50,7 +45,7 @@ namespace NORTHWND.Forms
         }
         void FillcbbSupplierSearch()
         {
-            SqlCommand cmd = new SqlCommand("Select SupplierID, CompanyName from Suppliers order by CompanyName", con);
+            SqlCommand cmd = new SqlCommand("Select SupplierID, CompanyName from Suppliers order by CompanyName", Connection.con);
             SqlDataAdapter da = new SqlDataAdapter(cmd);
             DataTable dt = new DataTable();
             da.Fill(dt);
@@ -60,7 +55,7 @@ namespace NORTHWND.Forms
         }
         void FillcbbCategory()
         {
-            SqlCommand cmd = new SqlCommand("Select CategoryID, CategoryName from Categories order by CategoryName", con);
+            SqlCommand cmd = new SqlCommand("Select CategoryID, CategoryName from Categories order by CategoryName", Connection.con);
             SqlDataAdapter da = new SqlDataAdapter(cmd);
             DataTable dt = new DataTable();
             da.Fill(dt);
@@ -70,7 +65,7 @@ namespace NORTHWND.Forms
         }
         void FillcbbCategorySearch()
         {
-            SqlCommand cmd = new SqlCommand("Select CategoryID, CategoryName from Categories order by CategoryName", con);
+            SqlCommand cmd = new SqlCommand("Select CategoryID, CategoryName from Categories order by CategoryName", Connection.con);
             SqlDataAdapter da = new SqlDataAdapter(cmd);
             DataTable dt = new DataTable();
             da.Fill(dt);
@@ -147,7 +142,7 @@ namespace NORTHWND.Forms
             short unitsInStock = 0, unitsOnOrder = 0, reorderLevel = 0;
             if(!string.IsNullOrEmpty(txtProductName.Text) && !(txtProductName.Text.Length > 40 || txtQuantityperUnit.Text.Length > 20) && (string.IsNullOrEmpty(txtUnitPrice.Text) ? true : decimal.TryParse(txtUnitPrice.Text, out unitPrice) && string.IsNullOrEmpty(txtUnitsinStock.Text) ? true : short.TryParse(txtUnitsinStock.Text, out unitsInStock) && string.IsNullOrEmpty(txtlblUnitsonOrder.Text) ? true : short.TryParse(txtlblUnitsonOrder.Text, out unitsOnOrder) && string.IsNullOrEmpty(txtReorderLevel.Text) ? true : short.TryParse(txtReorderLevel.Text, out reorderLevel)) && (rdbYes.Checked || rdbNo.Checked))
             {
-                SqlCommand cmd = new SqlCommand("insert into Products (ProductName, SupplierID, CategoryID, QuantityPerUnit, UnitPrice, UnitsInStock, UnitsOnOrder, ReorderLevel, Discontinued) values (@productName, @supplierID, @categoryID, @quantityPerUnit, @unitPrice, @unitsInStock, @unitsOnOrder, @reorderLevel, @discontinued)", con);
+                SqlCommand cmd = new SqlCommand("insert into Products (ProductName, SupplierID, CategoryID, QuantityPerUnit, UnitPrice, UnitsInStock, UnitsOnOrder, ReorderLevel, Discontinued) values (@productName, @supplierID, @categoryID, @quantityPerUnit, @unitPrice, @unitsInStock, @unitsOnOrder, @reorderLevel, @discontinued)", Connection.con);
                 cmd.Parameters.AddWithValue("@productName", txtProductName.Text);
                 cmd.Parameters.AddWithValue("@supplierID", cbbSupplier.SelectedValue);
                 cmd.Parameters.AddWithValue("@categoryID", cbbCategory.SelectedValue);
@@ -157,8 +152,8 @@ namespace NORTHWND.Forms
                 cmd.Parameters.AddWithValue("@unitsOnOrder", unitsOnOrder);
                 cmd.Parameters.AddWithValue("@reorderLevel", reorderLevel);
                 cmd.Parameters.AddWithValue("@discontinued", rdbYes.Checked ? true : false);
-                if (con.State == ConnectionState.Closed)
-                    con.Open();
+                if (Connection.con.State == ConnectionState.Closed)
+                    Connection.con.Open();
                 try
                 {
                     DialogResult dialogResult = MessageBox.Show($"Are You Sure Adding {txtProductName.Text}", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -178,7 +173,7 @@ namespace NORTHWND.Forms
                 }
                 finally
                 {
-                    con.Close();
+                    Connection.con.Close();
                     ListTheDataonDataGridView();
                     CleanTheControls();
                 }
@@ -198,10 +193,10 @@ namespace NORTHWND.Forms
         {
             if (!(string.IsNullOrEmpty(txtProductID.Text)))
             {
-                SqlCommand cmd = new SqlCommand("delete from Products where ProductID = @productID", con);
+                SqlCommand cmd = new SqlCommand("delete from Products where ProductID = @productID", Connection.con);
                 cmd.Parameters.AddWithValue("@productID", int.Parse(txtProductID.Text));
-                if (con.State == ConnectionState.Closed)
-                    con.Open();
+                if (Connection.con.State == ConnectionState.Closed)
+                    Connection.con.Open();
                 try
                 {
                     DialogResult dialogResult = MessageBox.Show($"Are You Sure Delete {txtProductName.Text}", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -221,7 +216,7 @@ namespace NORTHWND.Forms
                 }
                 finally
                 {
-                    con.Close();
+                    Connection.con.Close();
                     ListTheDataonDataGridView();
                     CleanTheControls();
                 }
@@ -239,7 +234,7 @@ namespace NORTHWND.Forms
             short unitsInStock = 0, unitsOnOrder = 0, reorderLevel = 0;
             if (!string.IsNullOrEmpty(txtProductName.Text) && !(txtProductName.Text.Length > 40 || txtQuantityperUnit.Text.Length > 20) && (string.IsNullOrEmpty(txtUnitPrice.Text) ? true : decimal.TryParse(txtUnitPrice.Text, out unitPrice) && string.IsNullOrEmpty(txtUnitsinStock.Text) ? true : short.TryParse(txtUnitsinStock.Text, out unitsInStock) && string.IsNullOrEmpty(txtlblUnitsonOrder.Text) ? true : short.TryParse(txtlblUnitsonOrder.Text, out unitsOnOrder) && string.IsNullOrEmpty(txtReorderLevel.Text) ? true : short.TryParse(txtReorderLevel.Text, out reorderLevel)) && (rdbYes.Checked || rdbNo.Checked))
             {
-                SqlCommand cmd = new SqlCommand("update Products set ProductName = @productName, SupplierID = @supplierID, CategoryID = @categoryID, QuantityPerUnit = @quantityPerUnit, UnitPrice = @unitPrice, UnitsInStock = @unitsInStock, UnitsOnOrder = @unitsOnOrder, ReorderLevel = @reorderLevel, Discontinued = @discontinued where ProductID = @productID", con);
+                SqlCommand cmd = new SqlCommand("update Products set ProductName = @productName, SupplierID = @supplierID, CategoryID = @categoryID, QuantityPerUnit = @quantityPerUnit, UnitPrice = @unitPrice, UnitsInStock = @unitsInStock, UnitsOnOrder = @unitsOnOrder, ReorderLevel = @reorderLevel, Discontinued = @discontinued where ProductID = @productID", Connection.con);
                 cmd.Parameters.AddWithValue("@productID", int.Parse(txtProductID.Text));
                 cmd.Parameters.AddWithValue("@productName", txtProductName.Text);
                 cmd.Parameters.AddWithValue("@supplierID", cbbSupplier.SelectedValue);
@@ -250,8 +245,8 @@ namespace NORTHWND.Forms
                 cmd.Parameters.AddWithValue("@unitsOnOrder", int.Parse(txtlblUnitsonOrder.Text));
                 cmd.Parameters.AddWithValue("@reorderLevel", int.Parse(txtReorderLevel.Text));
                 cmd.Parameters.AddWithValue("@discontinued", rdbYes.Checked ? true : false);
-                if (con.State == ConnectionState.Closed)
-                    con.Open();
+                if (Connection.con.State == ConnectionState.Closed)
+                    Connection.con.Open();
                 try
                 {
                     DialogResult dialogResult = MessageBox.Show($"Are You Sure Update {txtProductName.Text}", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -271,7 +266,7 @@ namespace NORTHWND.Forms
                 }
                 finally
                 {
-                    con.Close();
+                    Connection.con.Close();
                     ListTheDataonDataGridView();
                     CleanTheControls();
                 }
@@ -313,7 +308,7 @@ namespace NORTHWND.Forms
                 {
                     erpProductID.Clear();
 
-                    SqlCommand cmd = new SqlCommand("select ProductID, ProductName, s.CompanyName as Supplier, c.CategoryName, QuantityPerUnit, UnitPrice, UnitsInStock, UnitsOnOrder, ReorderLevel, Discontinued, p.SupplierID, p.CategoryID from Products as p join Suppliers as s on p.SupplierID = s.SupplierID join Categories as c on p.CategoryID = c.CategoryID where ProductID = @productID", con);
+                    SqlCommand cmd = new SqlCommand("select ProductID, ProductName, s.CompanyName as Supplier, c.CategoryName, QuantityPerUnit, UnitPrice, UnitsInStock, UnitsOnOrder, ReorderLevel, Discontinued, p.SupplierID, p.CategoryID from Products as p join Suppliers as s on p.SupplierID = s.SupplierID join Categories as c on p.CategoryID = c.CategoryID where ProductID = @productID", Connection.con);
                     cmd.Parameters.AddWithValue("@productID", productID);
                     SqlDataAdapter da = new SqlDataAdapter(cmd);
                     DataTable dt = new DataTable();
@@ -330,7 +325,7 @@ namespace NORTHWND.Forms
             }
             else if (rdbProductName.Checked)
             {
-                SqlCommand cmd1 = new SqlCommand("select ProductID, ProductName, s.CompanyName as Supplier, c.CategoryName, QuantityPerUnit, UnitPrice, UnitsInStock, UnitsOnOrder, ReorderLevel, Discontinued, p.SupplierID, p.CategoryID from Products as p join Suppliers as s on p.SupplierID = s.SupplierID join Categories as c on p.CategoryID = c.CategoryID where ProductName like @productName", con);
+                SqlCommand cmd1 = new SqlCommand("select ProductID, ProductName, s.CompanyName as Supplier, c.CategoryName, QuantityPerUnit, UnitPrice, UnitsInStock, UnitsOnOrder, ReorderLevel, Discontinued, p.SupplierID, p.CategoryID from Products as p join Suppliers as s on p.SupplierID = s.SupplierID join Categories as c on p.CategoryID = c.CategoryID where ProductName like @productName", Connection.con);
                 cmd1.Parameters.AddWithValue("@productName", "%" + txtProductNameSearch.Text + "%");
                 SqlDataAdapter da1 = new SqlDataAdapter(cmd1);
                 DataTable dt1 = new DataTable();
@@ -341,7 +336,7 @@ namespace NORTHWND.Forms
             }
             else if (rdbSupplier.Checked)
             {
-                SqlCommand cmd2 = new SqlCommand("select ProductID, ProductName, s.CompanyName as Supplier, c.CategoryName, QuantityPerUnit, UnitPrice, UnitsInStock, UnitsOnOrder, ReorderLevel, Discontinued, p.SupplierID, p.CategoryID from Products as p join Suppliers as s on p.SupplierID = s.SupplierID join Categories as c on p.CategoryID = c.CategoryID where p.SupplierID = @supplierID", con);
+                SqlCommand cmd2 = new SqlCommand("select ProductID, ProductName, s.CompanyName as Supplier, c.CategoryName, QuantityPerUnit, UnitPrice, UnitsInStock, UnitsOnOrder, ReorderLevel, Discontinued, p.SupplierID, p.CategoryID from Products as p join Suppliers as s on p.SupplierID = s.SupplierID join Categories as c on p.CategoryID = c.CategoryID where p.SupplierID = @supplierID", Connection.con);
                 cmd2.Parameters.AddWithValue("@supplierID", cbbSupplierSearch.SelectedValue);
                 SqlDataAdapter da2 = new SqlDataAdapter(cmd2);
                 DataTable dt2 = new DataTable();
@@ -352,7 +347,7 @@ namespace NORTHWND.Forms
             }
             else if (rdbCategory.Checked)
             {
-                SqlCommand cmd3 = new SqlCommand("select ProductID, ProductName, s.CompanyName as Supplier, c.CategoryName, QuantityPerUnit, UnitPrice, UnitsInStock, UnitsOnOrder, ReorderLevel, Discontinued, p.SupplierID, p.CategoryID from Products as p join Suppliers as s on p.SupplierID = s.SupplierID join Categories as c on p.CategoryID = c.CategoryID where p.CategoryID = @categoryID", con);
+                SqlCommand cmd3 = new SqlCommand("select ProductID, ProductName, s.CompanyName as Supplier, c.CategoryName, QuantityPerUnit, UnitPrice, UnitsInStock, UnitsOnOrder, ReorderLevel, Discontinued, p.SupplierID, p.CategoryID from Products as p join Suppliers as s on p.SupplierID = s.SupplierID join Categories as c on p.CategoryID = c.CategoryID where p.CategoryID = @categoryID", Connection.con);
                 cmd3.Parameters.AddWithValue("@categoryID", cbbCategorySearch.SelectedValue);
                 SqlDataAdapter da3 = new SqlDataAdapter(cmd3);
                 DataTable dt3 = new DataTable();
@@ -366,7 +361,7 @@ namespace NORTHWND.Forms
                 if (short.TryParse(txtReorderLevelSearch.Text, out short reorderLevel))
                 {
                     erpReorderLevel.Clear();
-                    SqlCommand cmd4 = new SqlCommand("select ProductID, ProductName, s.CompanyName as Supplier, c.CategoryName, QuantityPerUnit, UnitPrice, UnitsInStock, UnitsOnOrder, ReorderLevel, Discontinued, p.SupplierID, p.CategoryID from Products as p join Suppliers as s on p.SupplierID = s.SupplierID join Categories as c on p.CategoryID = c.CategoryID where ReorderLevel >= @reorderLevel", con);
+                    SqlCommand cmd4 = new SqlCommand("select ProductID, ProductName, s.CompanyName as Supplier, c.CategoryName, QuantityPerUnit, UnitPrice, UnitsInStock, UnitsOnOrder, ReorderLevel, Discontinued, p.SupplierID, p.CategoryID from Products as p join Suppliers as s on p.SupplierID = s.SupplierID join Categories as c on p.CategoryID = c.CategoryID where ReorderLevel >= @reorderLevel", Connection.con);
                     cmd4.Parameters.AddWithValue("@reorderLevel", reorderLevel);
                     SqlDataAdapter da4 = new SqlDataAdapter(cmd4);
                     DataTable dt4 = new DataTable();
@@ -385,7 +380,7 @@ namespace NORTHWND.Forms
                 if (short.TryParse(txtUnitPriceSearch.Text, out short unitPrice))
                 {
                     erpUnitPrice.Clear();
-                    SqlCommand cmd5 = new SqlCommand("select ProductID, ProductName, s.CompanyName as Supplier, c.CategoryName, QuantityPerUnit, UnitPrice, UnitsInStock, UnitsOnOrder, ReorderLevel, Discontinued, p.SupplierID, p.CategoryID from Products as p join Suppliers as s on p.SupplierID = s.SupplierID join Categories as c on p.CategoryID = c.CategoryID where UnitPrice >= @unitPrice", con);
+                    SqlCommand cmd5 = new SqlCommand("select ProductID, ProductName, s.CompanyName as Supplier, c.CategoryName, QuantityPerUnit, UnitPrice, UnitsInStock, UnitsOnOrder, ReorderLevel, Discontinued, p.SupplierID, p.CategoryID from Products as p join Suppliers as s on p.SupplierID = s.SupplierID join Categories as c on p.CategoryID = c.CategoryID where UnitPrice >= @unitPrice", Connection.con);
                     cmd5.Parameters.AddWithValue("@unitPrice", unitPrice);
                     SqlDataAdapter da5 = new SqlDataAdapter(cmd5);
                     DataTable dt5 = new DataTable();
@@ -404,7 +399,7 @@ namespace NORTHWND.Forms
                 if (short.TryParse(txtUnitsinStockSearch.Text, out short unitsinStock))
                 {
                     erpUnitsinStock.Clear();
-                    SqlCommand cmd6 = new SqlCommand("select ProductID, ProductName, s.CompanyName as Supplier, c.CategoryName, QuantityPerUnit, UnitPrice, UnitsInStock, UnitsOnOrder, ReorderLevel, Discontinued, p.SupplierID, p.CategoryID from Products as p join Suppliers as s on p.SupplierID = s.SupplierID join Categories as c on p.CategoryID = c.CategoryID where UnitsInStock >= @unitsinStock", con);
+                    SqlCommand cmd6 = new SqlCommand("select ProductID, ProductName, s.CompanyName as Supplier, c.CategoryName, QuantityPerUnit, UnitPrice, UnitsInStock, UnitsOnOrder, ReorderLevel, Discontinued, p.SupplierID, p.CategoryID from Products as p join Suppliers as s on p.SupplierID = s.SupplierID join Categories as c on p.CategoryID = c.CategoryID where UnitsInStock >= @unitsinStock", Connection.con);
                     cmd6.Parameters.AddWithValue("@unitsinStock", unitsinStock);
                     SqlDataAdapter da6 = new SqlDataAdapter(cmd6);
                     DataTable dt6 = new DataTable();
@@ -423,7 +418,7 @@ namespace NORTHWND.Forms
                 if (rdbYesSearch.Checked || rdbNoSearch.Checked)
                 {
                     erpDiscontinued.Clear();
-                    SqlCommand cmd7 = new SqlCommand("select ProductID, ProductName, s.CompanyName as Supplier, c.CategoryName, QuantityPerUnit, UnitPrice, UnitsInStock, UnitsOnOrder, ReorderLevel, Discontinued, p.SupplierID, p.CategoryID from Products as p join Suppliers as s on p.SupplierID = s.SupplierID join Categories as c on p.CategoryID = c.CategoryID where Discontinued >= @discontinued", con);
+                    SqlCommand cmd7 = new SqlCommand("select ProductID, ProductName, s.CompanyName as Supplier, c.CategoryName, QuantityPerUnit, UnitPrice, UnitsInStock, UnitsOnOrder, ReorderLevel, Discontinued, p.SupplierID, p.CategoryID from Products as p join Suppliers as s on p.SupplierID = s.SupplierID join Categories as c on p.CategoryID = c.CategoryID where Discontinued >= @discontinued", Connection.con);
                     cmd7.Parameters.AddWithValue("@discontinued", rdbYesSearch.Checked ? true : false);
                     SqlDataAdapter da7 = new SqlDataAdapter(cmd7);
                     DataTable dt7 = new DataTable();

@@ -19,15 +19,13 @@ namespace NORTHWND.Forms
             _frm = frm;
         }
 
-        SqlConnection con = new SqlConnection("Server=DESKTOP-A10URF2\\SQLEXPRESS;Database=NORTHWND;Trusted_Connection=True;");
-
         ErrorProvider erpOrderDate = new ErrorProvider(), erpRequiredDate = new ErrorProvider(), erpShippedDate = new ErrorProvider(), erpFreight = new ErrorProvider(), erpShipCity = new ErrorProvider(), erpShipCountry = new ErrorProvider(), erpShipRegion = new ErrorProvider(), erpShipPostalCode = new ErrorProvider(), erpShipName = new ErrorProvider(), erpShipAddress = new ErrorProvider(), erpOrderID = new ErrorProvider();
 
         private frmHomePage _frm;
 
         void ListTheDataToDataGridView()
         {
-            SqlCommand cmd = new SqlCommand("Select OrderID, c.CompanyName, (FirstName + ' ' + LastName) as Employee, OrderDate, RequiredDate, ShippedDate, s.CompanyName, Freight, ShipName, ShipAddress, ShipCity, ShipRegion, ShipPostalCode, ShipCountry, o.CustomerID, o.EmployeeID, o.ShipVia from Orders as o join Customers as c on o.CustomerID = c.CustomerID join Employees as e on o.EmployeeID = e.EmployeeID join Shippers as s on s.ShipperID = o.ShipVia", con);
+            SqlCommand cmd = new SqlCommand("Select OrderID, c.CompanyName, (FirstName + ' ' + LastName) as Employee, OrderDate, RequiredDate, ShippedDate, s.CompanyName, Freight, ShipName, ShipAddress, ShipCity, ShipRegion, ShipPostalCode, ShipCountry, o.CustomerID, o.EmployeeID, o.ShipVia from Orders as o join Customers as c on o.CustomerID = c.CustomerID join Employees as e on o.EmployeeID = e.EmployeeID join Shippers as s on s.ShipperID = o.ShipVia", Connection.con);
             SqlDataAdapter da = new SqlDataAdapter(cmd);
             DataTable dt = new DataTable();
             da.Fill(dt);
@@ -38,7 +36,7 @@ namespace NORTHWND.Forms
         }
         void FillcbbCustomer()
         {
-            SqlCommand cmd = new SqlCommand("select CustomerID, CompanyName from Customers order by CompanyName", con);
+            SqlCommand cmd = new SqlCommand("select CustomerID, CompanyName from Customers order by CompanyName", Connection.con);
             SqlDataAdapter da = new SqlDataAdapter(cmd);
             DataTable dt = new DataTable();
             da.Fill(dt);
@@ -48,7 +46,7 @@ namespace NORTHWND.Forms
         }
         void FillcbbCustomerSearch()
         {
-            SqlCommand cmd = new SqlCommand("select CustomerID, CompanyName from Customers order by CompanyName", con);
+            SqlCommand cmd = new SqlCommand("select CustomerID, CompanyName from Customers order by CompanyName", Connection.con);
             SqlDataAdapter da = new SqlDataAdapter(cmd);
             DataTable dt = new DataTable();
             da.Fill(dt);
@@ -58,7 +56,7 @@ namespace NORTHWND.Forms
         }
         void FillcbbEmployee()
         {
-            SqlCommand cmd = new SqlCommand("select EmployeeID, (FirstName + ' ' + LastName) as Employee from Employees order by FirstName", con);
+            SqlCommand cmd = new SqlCommand("select EmployeeID, (FirstName + ' ' + LastName) as Employee from Employees order by FirstName", Connection.con);
             SqlDataAdapter da = new SqlDataAdapter(cmd);
             DataTable dt = new DataTable();
             da.Fill(dt);
@@ -68,7 +66,7 @@ namespace NORTHWND.Forms
         }
         void FillcbbEmployeeSearch()
         {
-            SqlCommand cmd = new SqlCommand("select EmployeeID, (FirstName + ' ' + LastName) as Employee from Employees order by FirstName", con);
+            SqlCommand cmd = new SqlCommand("select EmployeeID, (FirstName + ' ' + LastName) as Employee from Employees order by FirstName", Connection.con);
             SqlDataAdapter da = new SqlDataAdapter(cmd);
             DataTable dt = new DataTable();
             da.Fill(dt);
@@ -78,7 +76,7 @@ namespace NORTHWND.Forms
         }
         void FillcbbShipVia()
         {
-            SqlCommand cmd = new SqlCommand("select ShipperID, CompanyName from Shippers order by CompanyName", con);
+            SqlCommand cmd = new SqlCommand("select ShipperID, CompanyName from Shippers order by CompanyName", Connection.con);
             SqlDataAdapter da = new SqlDataAdapter(cmd);
             DataTable dt = new DataTable();
             da.Fill(dt);
@@ -88,7 +86,7 @@ namespace NORTHWND.Forms
         }
         void FillcbbShipViaSearch()
         {
-            SqlCommand cmd = new SqlCommand("select ShipperID, CompanyName from Shippers order by CompanyName", con);
+            SqlCommand cmd = new SqlCommand("select ShipperID, CompanyName from Shippers order by CompanyName", Connection.con);
             SqlDataAdapter da = new SqlDataAdapter(cmd);
             DataTable dt = new DataTable();
             da.Fill(dt);
@@ -192,7 +190,7 @@ namespace NORTHWND.Forms
             decimal freight = 0;
             if ((string.IsNullOrEmpty(txtFreight.Text) ? true : decimal.TryParse(txtFreight.Text, out freight) ? freight >= 0 : true) && !(txtShipName.Text.Length > 40 || txtShipAddress.Text.Length > 60 || txtShipCity.Text.Length > 15 || txtShipRegion.Text.Length > 15 || txtShipPostalCode.Text.Length > 10 || txtShipCountry.Text.Length > 15 || dtpOrderDate.Value > DateTime.Now))
             {
-                SqlCommand cmd = new SqlCommand("insert into Orders (CustomerID, EmployeeID, OrderDate, RequiredDate, ShippedDate, ShipVia, Freight, ShipName, ShipAddress, ShipCity, ShipRegion, ShipPostalCode, ShipCountry) values (@customerID, @employeeID, @orderDate, @requiredDate, @shippedDate, @shipVia, @freight, @shipName, @shipAddress, @shipCity, @shipRegion, @shipPostalCode, @shipCountry)", con);
+                SqlCommand cmd = new SqlCommand("insert into Orders (CustomerID, EmployeeID, OrderDate, RequiredDate, ShippedDate, ShipVia, Freight, ShipName, ShipAddress, ShipCity, ShipRegion, ShipPostalCode, ShipCountry) values (@customerID, @employeeID, @orderDate, @requiredDate, @shippedDate, @shipVia, @freight, @shipName, @shipAddress, @shipCity, @shipRegion, @shipPostalCode, @shipCountry)", Connection.con);
                 cmd.Parameters.AddWithValue("@customerID", cbbCustomer.SelectedValue);
                 cmd.Parameters.AddWithValue("@employeeID", cbbEmployee.SelectedValue);
                 cmd.Parameters.AddWithValue("@orderDate", dtpOrderDate.Value);
@@ -206,8 +204,8 @@ namespace NORTHWND.Forms
                 cmd.Parameters.AddWithValue("@shipRegion", txtShipRegion.Text);
                 cmd.Parameters.AddWithValue("@shipPostalCode", txtShipPostalCode.Text);
                 cmd.Parameters.AddWithValue("@shipCountry", txtShipCountry.Text);
-                if (con.State == ConnectionState.Closed)
-                    con.Open();
+                if (Connection.con.State == ConnectionState.Closed)
+                    Connection.con.Open();
                 try
                 {
                     DialogResult dialogResult = MessageBox.Show("Are You Sure Adding New Order", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -227,7 +225,7 @@ namespace NORTHWND.Forms
                 }
                 finally
                 {
-                    con.Close();
+                    Connection.con.Close();
                     ListTheDataToDataGridView();
                     CleanTheControls();
                 }
@@ -240,10 +238,10 @@ namespace NORTHWND.Forms
 
             if (!string.IsNullOrEmpty(txtOrderID.Text))
             {
-                SqlCommand cmd = new SqlCommand("delete from Orders where OrderID = @orderID", con);
+                SqlCommand cmd = new SqlCommand("delete from Orders where OrderID = @orderID", Connection.con);
                 cmd.Parameters.AddWithValue("@orderID", txtOrderID.Text);
-                if (con.State == ConnectionState.Closed)
-                    con.Open();
+                if (Connection.con.State == ConnectionState.Closed)
+                    Connection.con.Open();
                 try
                 {
                     DialogResult dialogResult = MessageBox.Show($"Are You Sure Delete {txtOrderID.Text}", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -263,7 +261,7 @@ namespace NORTHWND.Forms
                 }
                 finally
                 {
-                    con.Close();
+                    Connection.con.Close();
                     ListTheDataToDataGridView();
                     CleanTheControls();
                 }
@@ -278,7 +276,7 @@ namespace NORTHWND.Forms
             decimal freight = 0;
             if ((string.IsNullOrEmpty(txtFreight.Text) ? true : decimal.TryParse(txtFreight.Text, out freight) ? freight >= 0 : false) && !string.IsNullOrEmpty(txtOrderID.Text) && !(txtShipName.Text.Length > 40 || txtShipAddress.Text.Length > 60 || txtShipCity.Text.Length > 15 || txtShipRegion.Text.Length > 15 || txtShipPostalCode.Text.Length > 10 || txtShipCountry.Text.Length > 15 || dtpOrderDate.Value > DateTime.Now))
             {
-                SqlCommand cmd = new SqlCommand("update Orders set CustomerID = @customerID, EmployeeID = @employeeID, OrderDate = @orderDate, RequiredDate = @requiredDate, ShippedDate = @shippedDate, ShipVia = @shipVia, Freight = @freight, ShipName = @shipName, ShipAddress = @shipAddress, ShipCity = @shipCity, ShipRegion = @shipRegion, ShipPostalCode = @shipPostalCode, ShipCountry = @shipCountry where OrderID = @orderID", con);
+                SqlCommand cmd = new SqlCommand("update Orders set CustomerID = @customerID, EmployeeID = @employeeID, OrderDate = @orderDate, RequiredDate = @requiredDate, ShippedDate = @shippedDate, ShipVia = @shipVia, Freight = @freight, ShipName = @shipName, ShipAddress = @shipAddress, ShipCity = @shipCity, ShipRegion = @shipRegion, ShipPostalCode = @shipPostalCode, ShipCountry = @shipCountry where OrderID = @orderID", Connection.con);
                 cmd.Parameters.AddWithValue("@orderID", txtOrderID.Text);
                 cmd.Parameters.AddWithValue("@customerID", cbbCustomer.SelectedValue);
                 cmd.Parameters.AddWithValue("@employeeID", cbbEmployee.SelectedValue);
@@ -294,8 +292,8 @@ namespace NORTHWND.Forms
                 cmd.Parameters.AddWithValue("@shipPostalCode", txtShipPostalCode.Text);
                 cmd.Parameters.AddWithValue("@shipCountry", txtShipCountry.Text);
 
-                if (con.State == ConnectionState.Closed)
-                    con.Open();
+                if (Connection.con.State == ConnectionState.Closed)
+                    Connection.con.Open();
                 try
                 {
                     DialogResult dialogResult = MessageBox.Show($"Are You Sure Update {txtOrderID.Text}", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -315,7 +313,7 @@ namespace NORTHWND.Forms
                 }
                 finally
                 {
-                    con.Close();
+                    Connection.con.Close();
                     ListTheDataToDataGridView();
                     CleanTheControls();
                 }
@@ -336,7 +334,7 @@ namespace NORTHWND.Forms
             {
                 if (!string.IsNullOrEmpty(txtOrderIDSearch.Text))
                 {
-                    SqlCommand cmd = new SqlCommand("Select OrderID, c.CompanyName, (FirstName + ' ' + LastName) as Employee, OrderDate, RequiredDate, ShippedDate, s.CompanyName, Freight, ShipName, ShipAddress, ShipCity, ShipRegion, ShipPostalCode, ShipCountry, o.CustomerID, o.EmployeeID, o.ShipVia from Orders as o join Customers as c on o.CustomerID = c.CustomerID join Employees as e on o.EmployeeID = e.EmployeeID join Shippers as s on s.ShipperID = o.ShipVia where OrderID = @orderID", con);
+                    SqlCommand cmd = new SqlCommand("Select OrderID, c.CompanyName, (FirstName + ' ' + LastName) as Employee, OrderDate, RequiredDate, ShippedDate, s.CompanyName, Freight, ShipName, ShipAddress, ShipCity, ShipRegion, ShipPostalCode, ShipCountry, o.CustomerID, o.EmployeeID, o.ShipVia from Orders as o join Customers as c on o.CustomerID = c.CustomerID join Employees as e on o.EmployeeID = e.EmployeeID join Shippers as s on s.ShipperID = o.ShipVia where OrderID = @orderID", Connection.con);
                     cmd.Parameters.AddWithValue("@orderID", txtOrderIDSearch.Text);
                     SqlDataAdapter da = new SqlDataAdapter(cmd);
                     DataTable dt = new DataTable();
@@ -349,7 +347,7 @@ namespace NORTHWND.Forms
             }
             else if (rdbCustomer.Checked)
             {
-                SqlCommand cmd = new SqlCommand("Select OrderID, c.CompanyName, (FirstName + ' ' + LastName) as Employee, OrderDate, RequiredDate, ShippedDate, s.CompanyName, Freight, ShipName, ShipAddress, ShipCity, ShipRegion, ShipPostalCode, ShipCountry, o.CustomerID, o.EmployeeID, o.ShipVia from Orders as o join Customers as c on o.CustomerID = c.CustomerID join Employees as e on o.EmployeeID = e.EmployeeID join Shippers as s on s.ShipperID = o.ShipVia where o.CustomerID = @customerID", con);
+                SqlCommand cmd = new SqlCommand("Select OrderID, c.CompanyName, (FirstName + ' ' + LastName) as Employee, OrderDate, RequiredDate, ShippedDate, s.CompanyName, Freight, ShipName, ShipAddress, ShipCity, ShipRegion, ShipPostalCode, ShipCountry, o.CustomerID, o.EmployeeID, o.ShipVia from Orders as o join Customers as c on o.CustomerID = c.CustomerID join Employees as e on o.EmployeeID = e.EmployeeID join Shippers as s on s.ShipperID = o.ShipVia where o.CustomerID = @customerID", Connection.con);
                 cmd.Parameters.AddWithValue("@customerID", cbbCustomerSearch.SelectedValue);
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
@@ -361,7 +359,7 @@ namespace NORTHWND.Forms
             }
             else if (rdbEmployee.Checked)
             {
-                SqlCommand cmd = new SqlCommand("Select OrderID, c.CompanyName, (FirstName + ' ' + LastName) as Employee, OrderDate, RequiredDate, ShippedDate, s.CompanyName, Freight, ShipName, ShipAddress, ShipCity, ShipRegion, ShipPostalCode, ShipCountry, o.CustomerID, o.EmployeeID, o.ShipVia from Orders as o join Customers as c on o.CustomerID = c.CustomerID join Employees as e on o.EmployeeID = e.EmployeeID join Shippers as s on s.ShipperID = o.ShipVia where o.EmployeeID = @employeeID", con);
+                SqlCommand cmd = new SqlCommand("Select OrderID, c.CompanyName, (FirstName + ' ' + LastName) as Employee, OrderDate, RequiredDate, ShippedDate, s.CompanyName, Freight, ShipName, ShipAddress, ShipCity, ShipRegion, ShipPostalCode, ShipCountry, o.CustomerID, o.EmployeeID, o.ShipVia from Orders as o join Customers as c on o.CustomerID = c.CustomerID join Employees as e on o.EmployeeID = e.EmployeeID join Shippers as s on s.ShipperID = o.ShipVia where o.EmployeeID = @employeeID", Connection.con);
                 cmd.Parameters.AddWithValue("@employeeID", cbbEmployeeSearch.SelectedValue);
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
@@ -373,7 +371,7 @@ namespace NORTHWND.Forms
             }
             else if (rdbShipVia.Checked)
             {
-                SqlCommand cmd = new SqlCommand("Select OrderID, c.CompanyName, (FirstName + ' ' + LastName) as Employee, OrderDate, RequiredDate, ShippedDate, s.CompanyName, Freight, ShipName, ShipAddress, ShipCity, ShipRegion, ShipPostalCode, ShipCountry, o.CustomerID, o.EmployeeID, o.ShipVia from Orders as o join Customers as c on o.CustomerID = c.CustomerID join Employees as e on o.EmployeeID = e.EmployeeID join Shippers as s on s.ShipperID = o.ShipVia where ShipVia = @shipVia", con);
+                SqlCommand cmd = new SqlCommand("Select OrderID, c.CompanyName, (FirstName + ' ' + LastName) as Employee, OrderDate, RequiredDate, ShippedDate, s.CompanyName, Freight, ShipName, ShipAddress, ShipCity, ShipRegion, ShipPostalCode, ShipCountry, o.CustomerID, o.EmployeeID, o.ShipVia from Orders as o join Customers as c on o.CustomerID = c.CustomerID join Employees as e on o.EmployeeID = e.EmployeeID join Shippers as s on s.ShipperID = o.ShipVia where ShipVia = @shipVia", Connection.con);
                 cmd.Parameters.AddWithValue("@shipVia", cbbShipVia.SelectedValue);
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
@@ -385,7 +383,7 @@ namespace NORTHWND.Forms
             }
             else if (rdbOrderDate.Checked)
             {
-                SqlCommand cmd = new SqlCommand("Select OrderID, c.CompanyName, (FirstName + ' ' + LastName) as Employee, OrderDate, RequiredDate, ShippedDate, s.CompanyName, Freight, ShipName, ShipAddress, ShipCity, ShipRegion, ShipPostalCode, ShipCountry, o.CustomerID, o.EmployeeID, o.ShipVia from Orders as o join Customers as c on o.CustomerID = c.CustomerID join Employees as e on o.EmployeeID = e.EmployeeID join Shippers as s on s.ShipperID = o.ShipVia where OrderDate >= @orderDate", con);
+                SqlCommand cmd = new SqlCommand("Select OrderID, c.CompanyName, (FirstName + ' ' + LastName) as Employee, OrderDate, RequiredDate, ShippedDate, s.CompanyName, Freight, ShipName, ShipAddress, ShipCity, ShipRegion, ShipPostalCode, ShipCountry, o.CustomerID, o.EmployeeID, o.ShipVia from Orders as o join Customers as c on o.CustomerID = c.CustomerID join Employees as e on o.EmployeeID = e.EmployeeID join Shippers as s on s.ShipperID = o.ShipVia where OrderDate >= @orderDate", Connection.con);
                 cmd.Parameters.AddWithValue("@orderDate", dtpOrderdateSearch.Value);
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
@@ -397,7 +395,7 @@ namespace NORTHWND.Forms
             }
             else if (rdbRequiredDate.Checked)
             {
-                SqlCommand cmd = new SqlCommand("Select OrderID, c.CompanyName, (FirstName + ' ' + LastName) as Employee, OrderDate, RequiredDate, ShippedDate, s.CompanyName, Freight, ShipName, ShipAddress, ShipCity, ShipRegion, ShipPostalCode, ShipCountry, o.CustomerID, o.EmployeeID, o.ShipVia from Orders as o join Customers as c on o.CustomerID = c.CustomerID join Employees as e on o.EmployeeID = e.EmployeeID join Shippers as s on s.ShipperID = o.ShipVia where RequiredDate >= @requiredDate", con);
+                SqlCommand cmd = new SqlCommand("Select OrderID, c.CompanyName, (FirstName + ' ' + LastName) as Employee, OrderDate, RequiredDate, ShippedDate, s.CompanyName, Freight, ShipName, ShipAddress, ShipCity, ShipRegion, ShipPostalCode, ShipCountry, o.CustomerID, o.EmployeeID, o.ShipVia from Orders as o join Customers as c on o.CustomerID = c.CustomerID join Employees as e on o.EmployeeID = e.EmployeeID join Shippers as s on s.ShipperID = o.ShipVia where RequiredDate >= @requiredDate", Connection.con);
                 cmd.Parameters.AddWithValue("@requiredDate", dtpRequiredDateSearch.Value);
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
@@ -409,7 +407,7 @@ namespace NORTHWND.Forms
             }
             else if (rdbShippedDate.Checked)
             {
-                SqlCommand cmd = new SqlCommand("Select OrderID, c.CompanyName, (FirstName + ' ' + LastName) as Employee, OrderDate, RequiredDate, ShippedDate, s.CompanyName, Freight, ShipName, ShipAddress, ShipCity, ShipRegion, ShipPostalCode, ShipCountry, o.CustomerID, o.EmployeeID, o.ShipVia from Orders as o join Customers as c on o.CustomerID = c.CustomerID join Employees as e on o.EmployeeID = e.EmployeeID join Shippers as s on s.ShipperID = o.ShipVia where ShippedDate >= @shippedDate", con);
+                SqlCommand cmd = new SqlCommand("Select OrderID, c.CompanyName, (FirstName + ' ' + LastName) as Employee, OrderDate, RequiredDate, ShippedDate, s.CompanyName, Freight, ShipName, ShipAddress, ShipCity, ShipRegion, ShipPostalCode, ShipCountry, o.CustomerID, o.EmployeeID, o.ShipVia from Orders as o join Customers as c on o.CustomerID = c.CustomerID join Employees as e on o.EmployeeID = e.EmployeeID join Shippers as s on s.ShipperID = o.ShipVia where ShippedDate >= @shippedDate", Connection.con);
                 cmd.Parameters.AddWithValue("@shippedDate", dtpShippedDateSearch.Value);
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
@@ -421,7 +419,7 @@ namespace NORTHWND.Forms
             }
             else if (rdbCity.Checked)
             {
-                SqlCommand cmd = new SqlCommand("Select OrderID, c.CompanyName, (FirstName + ' ' + LastName) as Employee, OrderDate, RequiredDate, ShippedDate, s.CompanyName, Freight, ShipName, ShipAddress, ShipCity, ShipRegion, ShipPostalCode, ShipCountry, o.CustomerID, o.EmployeeID, o.ShipVia from Orders as o join Customers as c on o.CustomerID = c.CustomerID join Employees as e on o.EmployeeID = e.EmployeeID join Shippers as s on s.ShipperID = o.ShipVia where ShipCity like @shipCity", con);
+                SqlCommand cmd = new SqlCommand("Select OrderID, c.CompanyName, (FirstName + ' ' + LastName) as Employee, OrderDate, RequiredDate, ShippedDate, s.CompanyName, Freight, ShipName, ShipAddress, ShipCity, ShipRegion, ShipPostalCode, ShipCountry, o.CustomerID, o.EmployeeID, o.ShipVia from Orders as o join Customers as c on o.CustomerID = c.CustomerID join Employees as e on o.EmployeeID = e.EmployeeID join Shippers as s on s.ShipperID = o.ShipVia where ShipCity like @shipCity", Connection.con);
                 cmd.Parameters.AddWithValue("@shipCity", "%" + txtShipCitySearch.Text + "%");
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
@@ -433,7 +431,7 @@ namespace NORTHWND.Forms
             }
             else if (rdbCountry.Checked)
             {
-                SqlCommand cmd = new SqlCommand("Select OrderID, c.CompanyName, (FirstName + ' ' + LastName) as Employee, OrderDate, RequiredDate, ShippedDate, s.CompanyName, Freight, ShipName, ShipAddress, ShipCity, ShipRegion, ShipPostalCode, ShipCountry, o.CustomerID, o.EmployeeID, o.ShipVia from Orders as o join Customers as c on o.CustomerID = c.CustomerID join Employees as e on o.EmployeeID = e.EmployeeID join Shippers as s on s.ShipperID = o.ShipVia where ShipCountry like @shipCountry", con);
+                SqlCommand cmd = new SqlCommand("Select OrderID, c.CompanyName, (FirstName + ' ' + LastName) as Employee, OrderDate, RequiredDate, ShippedDate, s.CompanyName, Freight, ShipName, ShipAddress, ShipCity, ShipRegion, ShipPostalCode, ShipCountry, o.CustomerID, o.EmployeeID, o.ShipVia from Orders as o join Customers as c on o.CustomerID = c.CustomerID join Employees as e on o.EmployeeID = e.EmployeeID join Shippers as s on s.ShipperID = o.ShipVia where ShipCountry like @shipCountry", Connection.con);
                 cmd.Parameters.AddWithValue("@shipCountry", "%" + txtShipCountrySearch.Text + "%");
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
@@ -445,7 +443,7 @@ namespace NORTHWND.Forms
             }
             else if (rdbName.Checked)
             {
-                SqlCommand cmd = new SqlCommand("Select OrderID, c.CompanyName, (FirstName + ' ' + LastName) as Employee, OrderDate, RequiredDate, ShippedDate, s.CompanyName, Freight, ShipName, ShipAddress, ShipCity, ShipRegion, ShipPostalCode, ShipCountry, o.CustomerID, o.EmployeeID, o.ShipVia from Orders as o join Customers as c on o.CustomerID = c.CustomerID join Employees as e on o.EmployeeID = e.EmployeeID join Shippers as s on s.ShipperID = o.ShipVia where ShipName like @shipName", con);
+                SqlCommand cmd = new SqlCommand("Select OrderID, c.CompanyName, (FirstName + ' ' + LastName) as Employee, OrderDate, RequiredDate, ShippedDate, s.CompanyName, Freight, ShipName, ShipAddress, ShipCity, ShipRegion, ShipPostalCode, ShipCountry, o.CustomerID, o.EmployeeID, o.ShipVia from Orders as o join Customers as c on o.CustomerID = c.CustomerID join Employees as e on o.EmployeeID = e.EmployeeID join Shippers as s on s.ShipperID = o.ShipVia where ShipName like @shipName", Connection.con);
                 cmd.Parameters.AddWithValue("@shipName", "%" + txtShipNameSearch.Text + "%");
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
@@ -461,7 +459,7 @@ namespace NORTHWND.Forms
                 if (decimal.TryParse(txtFreightSearch.Text, out freight))
                 {
                     erpFreight.Clear();
-                    SqlCommand cmd = new SqlCommand("Select OrderID, c.CompanyName, (FirstName + ' ' + LastName) as Employee, OrderDate, RequiredDate, ShippedDate, s.CompanyName, Freight, ShipName, ShipAddress, ShipCity, ShipRegion, ShipPostalCode, ShipCountry, o.CustomerID, o.EmployeeID, o.ShipVia from Orders as o join Customers as c on o.CustomerID = c.CustomerID join Employees as e on o.EmployeeID = e.EmployeeID join Shippers as s on s.ShipperID = o.ShipVia where Freight >= @freight", con);
+                    SqlCommand cmd = new SqlCommand("Select OrderID, c.CompanyName, (FirstName + ' ' + LastName) as Employee, OrderDate, RequiredDate, ShippedDate, s.CompanyName, Freight, ShipName, ShipAddress, ShipCity, ShipRegion, ShipPostalCode, ShipCountry, o.CustomerID, o.EmployeeID, o.ShipVia from Orders as o join Customers as c on o.CustomerID = c.CustomerID join Employees as e on o.EmployeeID = e.EmployeeID join Shippers as s on s.ShipperID = o.ShipVia where Freight >= @freight", Connection.con);
                     cmd.Parameters.AddWithValue("@freight", freight);
                     SqlDataAdapter da = new SqlDataAdapter(cmd);
                     DataTable dt = new DataTable();

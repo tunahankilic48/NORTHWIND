@@ -13,8 +13,6 @@ namespace NORTHWND.Forms
 {
     public partial class frmOrderDetails : Form
     {
-        SqlConnection con = new SqlConnection("Server=DESKTOP-A10URF2\\SQLEXPRESS;Database=NORTHWND;Encrypt=false;Trusted_Connection=True;");
-
         ErrorProvider erpOrderID = new ErrorProvider(), erpUnitPrice = new ErrorProvider(), erpQuantity = new ErrorProvider(), erpDiscount = new ErrorProvider();
 
         private frmHomePage _frm;
@@ -26,7 +24,7 @@ namespace NORTHWND.Forms
         }
         void ListTheDataonDataGridView()
         {
-            SqlCommand cmd = new SqlCommand("select OrderID, p.ProductName, od.UnitPrice, Quantity, Discount, p.ProductID from [Order Details] as od join Products as p on od.ProductID = p.ProductID", con);
+            SqlCommand cmd = new SqlCommand("select OrderID, p.ProductName, od.UnitPrice, Quantity, Discount, p.ProductID from [Order Details] as od join Products as p on od.ProductID = p.ProductID", Connection.con);
             SqlDataAdapter da = new SqlDataAdapter(cmd);
             DataTable dt = new DataTable();
             da.Fill(dt);
@@ -35,7 +33,7 @@ namespace NORTHWND.Forms
         }
         void FillcbbProduct()
         {
-            SqlCommand cmd = new SqlCommand("Select ProductID, ProductName from Products order by ProductName", con);
+            SqlCommand cmd = new SqlCommand("Select ProductID, ProductName from Products order by ProductName", Connection.con);
             SqlDataAdapter da = new SqlDataAdapter(cmd);
             DataTable dt = new DataTable();
             da.Fill(dt);
@@ -45,7 +43,7 @@ namespace NORTHWND.Forms
         }
         void FillcbbProductSearch()
         {
-            SqlCommand cmd = new SqlCommand("Select ProductID, ProductName from Products order by ProductName", con);
+            SqlCommand cmd = new SqlCommand("Select ProductID, ProductName from Products order by ProductName", Connection.con);
             SqlDataAdapter da = new SqlDataAdapter(cmd);
             DataTable dt = new DataTable();
             da.Fill(dt);
@@ -61,10 +59,6 @@ namespace NORTHWND.Forms
                 {
                     ((TextBox)control).Clear();
                 }
-                //else if (control is ComboBox)
-                //{
-                //    ((DateTimePicker)control).Value = DateTime.Now;
-                //}
                 else if (control is ComboBox)
                 {
                     ((ComboBox)control).SelectedIndex = 1;
@@ -95,14 +89,14 @@ namespace NORTHWND.Forms
             int orderID = 0; decimal unitPrice = 0; short quantity = 0; decimal discount = 0;
             if (!(!int.TryParse(txtOrderID.Text, out orderID) || orderID <= 0) && !(!decimal.TryParse(txtUnitPrice.Text, out unitPrice) || unitPrice < 0) && !(!short.TryParse(txtQuantity.Text, out quantity) || quantity < 0) && !(!decimal.TryParse(txtDiscount.Text, out discount) || discount < 0))
             {
-                SqlCommand cmd = new SqlCommand("insert into [Order Details] (OrderID, ProductID, UnitPrice, Quantity, Discount) values (@orderID, @productID, @unitPrice, @quantity, @discount)", con);
+                SqlCommand cmd = new SqlCommand("insert into [Order Details] (OrderID, ProductID, UnitPrice, Quantity, Discount) values (@orderID, @productID, @unitPrice, @quantity, @discount)", Connection.con);
                 cmd.Parameters.AddWithValue("@orderID", orderID);
                 cmd.Parameters.AddWithValue("@productID", cbbProduct.SelectedValue);
                 cmd.Parameters.AddWithValue("@unitPrice", unitPrice);
                 cmd.Parameters.AddWithValue("@quantity", quantity);
                 cmd.Parameters.AddWithValue("@discount", discount);
-                if (con.State == ConnectionState.Closed)
-                    con.Open();
+                if (Connection.con.State == ConnectionState.Closed)
+                    Connection.con.Open();
                 try
                 {
                     DialogResult dialogResult = MessageBox.Show($"Are You Sure Adding {txtOrderID.Text}", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -122,7 +116,7 @@ namespace NORTHWND.Forms
                 }
                 finally
                 {
-                    con.Close();
+                    Connection.con.Close();
                     ListTheDataonDataGridView();
                     CleanTheControls();
                 }
@@ -139,14 +133,14 @@ namespace NORTHWND.Forms
             int orderID = 0; decimal unitPrice = 0; short quantity = 0; decimal discount = 0;
             if (!(!int.TryParse(txtOrderID.Text, out orderID) || orderID <= 0) && !(!decimal.TryParse(txtUnitPrice.Text, out unitPrice) || unitPrice < 0) && !(!short.TryParse(txtQuantity.Text, out quantity) || quantity < 0) && !(!decimal.TryParse(txtDiscount.Text, out discount) || discount < 0))
             {
-                SqlCommand cmd = new SqlCommand("delete from [Order Details] where OrderID = @orderID and ProductID = @productID and UnitPrice = @unitPrice and Quantity = @quantity and Discount = @discount", con);
+                SqlCommand cmd = new SqlCommand("delete from [Order Details] where OrderID = @orderID and ProductID = @productID and UnitPrice = @unitPrice and Quantity = @quantity and Discount = @discount", Connection.con);
                 cmd.Parameters.AddWithValue("@orderID", orderID);
                 cmd.Parameters.AddWithValue("@productID", cbbProduct.SelectedValue);
                 cmd.Parameters.AddWithValue("@unitPrice", unitPrice);
                 cmd.Parameters.AddWithValue("@quantity", quantity);
                 cmd.Parameters.AddWithValue("@discount", discount);
-                if (con.State == ConnectionState.Closed)
-                    con.Open();
+                if (Connection.con.State == ConnectionState.Closed)
+                    Connection.con.Open();
                 try
                 {
                     DialogResult dialogResult = MessageBox.Show($"Are You Sure Delete", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -166,7 +160,7 @@ namespace NORTHWND.Forms
                 }
                 finally
                 {
-                    con.Close();
+                    Connection.con.Close();
                     ListTheDataonDataGridView();
                     CleanTheControls();
                 }
@@ -191,7 +185,7 @@ namespace NORTHWND.Forms
                 if (!(!int.TryParse(txtOrderIDSearch.Text, out orderID) || orderID <= 0))
                 {
                     erpOrderID.Clear();
-                    SqlCommand cmd = new SqlCommand("select OrderID, p.ProductName, od.UnitPrice, Quantity, Discount, p.ProductID from [Order Details] as od join Products as p on od.ProductID = p.ProductID where OrderID = @orderID", con);
+                    SqlCommand cmd = new SqlCommand("select OrderID, p.ProductName, od.UnitPrice, Quantity, Discount, p.ProductID from [Order Details] as od join Products as p on od.ProductID = p.ProductID where OrderID = @orderID", Connection.con);
                     cmd.Parameters.AddWithValue("@orderID", orderID);
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                     DataTable dt = new DataTable();
@@ -206,7 +200,7 @@ namespace NORTHWND.Forms
             }
             else if (rdbProduct.Checked)
             {
-                SqlCommand cmd = new SqlCommand("select OrderID, p.ProductName, od.UnitPrice, Quantity, Discount, p.ProductID from [Order Details] as od join Products as p on od.ProductID = p.ProductID where od.ProductID = @productID", con);
+                SqlCommand cmd = new SqlCommand("select OrderID, p.ProductName, od.UnitPrice, Quantity, Discount, p.ProductID from [Order Details] as od join Products as p on od.ProductID = p.ProductID where od.ProductID = @productID", Connection.con);
                 cmd.Parameters.AddWithValue("@productID", cbbProductSearch.SelectedValue);
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
@@ -220,7 +214,7 @@ namespace NORTHWND.Forms
                 if (!(!decimal.TryParse(txtUnitPriceSearch.Text, out unitPrice) || unitPrice < 0))
                 {
                     erpUnitPrice.Clear();
-                    SqlCommand cmd = new SqlCommand("select OrderID, p.ProductName, od.UnitPrice, Quantity, Discount, p.ProductID from [Order Details] as od join Products as p on od.ProductID = p.ProductID where od.UnitPrice > @unitPrice", con);
+                    SqlCommand cmd = new SqlCommand("select OrderID, p.ProductName, od.UnitPrice, Quantity, Discount, p.ProductID from [Order Details] as od join Products as p on od.ProductID = p.ProductID where od.UnitPrice > @unitPrice", Connection.con);
                     cmd.Parameters.AddWithValue("@unitPrice", unitPrice);
                     SqlDataAdapter da = new SqlDataAdapter(cmd);
                     DataTable dt = new DataTable();
@@ -239,7 +233,7 @@ namespace NORTHWND.Forms
                 if (!(!short.TryParse(txtQuantitySearch.Text, out quantity) || quantity < 0))
                 {
                     erpQuantity.Clear();
-                    SqlCommand cmd = new SqlCommand("select OrderID, p.ProductName, od.UnitPrice, Quantity, Discount, p.ProductID from [Order Details] as od join Products as p on od.ProductID = p.ProductID where od.Quantity = @quantity", con);
+                    SqlCommand cmd = new SqlCommand("select OrderID, p.ProductName, od.UnitPrice, Quantity, Discount, p.ProductID from [Order Details] as od join Products as p on od.ProductID = p.ProductID where od.Quantity = @quantity", Connection.con);
                     cmd.Parameters.AddWithValue("@quantity", quantity);
                     SqlDataAdapter da = new SqlDataAdapter(cmd);
                     DataTable dt = new DataTable();

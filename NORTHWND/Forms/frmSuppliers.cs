@@ -18,7 +18,6 @@ namespace NORTHWND.Forms
             InitializeComponent();
             _frm = frm;
         }
-        SqlConnection con = new SqlConnection("Server=DESKTOP-A10URF2\\SQLEXPRESS;Database=NORTHWND;Trusted_Connection=True;");
 
         ErrorProvider erpCompanyName = new ErrorProvider(), erpContactName = new ErrorProvider(), erpContactTitle = new ErrorProvider(), erpAddress = new ErrorProvider(), erpCity = new ErrorProvider(), erpRegion = new ErrorProvider(), erpPostalCode = new ErrorProvider(), erpCountry = new ErrorProvider(), erpPhone = new ErrorProvider(), erpFax = new ErrorProvider(), erpSupplierID = new ErrorProvider();
 
@@ -26,7 +25,7 @@ namespace NORTHWND.Forms
 
         void ListTheDataonDataGridView()
         {
-            SqlCommand cmd = new SqlCommand("select * from Suppliers", con);
+            SqlCommand cmd = new SqlCommand("select * from Suppliers", Connection.con);
             SqlDataAdapter da = new SqlDataAdapter(cmd);
             DataTable dt = new DataTable();
             da.Fill(dt);
@@ -77,7 +76,7 @@ namespace NORTHWND.Forms
         {
             if (!string.IsNullOrEmpty(txtCompanyName.Text) && !(txtCompanyName.Text.Length > 40 || txtContactName.Text.Length > 30 || txtContactTitle.Text.Length > 30 || txtAddress.Text.Length > 60 || txtCity.Text.Length > 15 || txtRegion.Text.Length > 15 || txtPostalCode.Text.Length > 10 || txtCountry.Text.Length > 15 || txtPhone.Text.Length > 24 || txtFax.Text.Length > 24))
             {
-                SqlCommand cmd = new SqlCommand("insert into Suppliers (CompanyName, ContactName, ContactTitle, Address, City, Region, PostalCode, Country, Phone, Fax, HomePage) values (@companyName, @contactName, @contactTitle, @address, @city, @region, @postalCode, @Country, @phone, @fax, @homePage)", con);
+                SqlCommand cmd = new SqlCommand("insert into Suppliers (CompanyName, ContactName, ContactTitle, Address, City, Region, PostalCode, Country, Phone, Fax, HomePage) values (@companyName, @contactName, @contactTitle, @address, @city, @region, @postalCode, @Country, @phone, @fax, @homePage)", Connection.con);
                 cmd.Parameters.AddWithValue("@companyName", txtCompanyName.Text);
                 cmd.Parameters.AddWithValue("@contactName", txtContactName.Text);
                 cmd.Parameters.AddWithValue("@contactTitle", txtContactTitle.Text);
@@ -89,8 +88,8 @@ namespace NORTHWND.Forms
                 cmd.Parameters.AddWithValue("@phone", txtPhone.Text);
                 cmd.Parameters.AddWithValue("@fax", txtFax.Text);
                 cmd.Parameters.AddWithValue("@homePage", txtHomePage.Text);
-                if (con.State == ConnectionState.Closed)
-                    con.Open();
+                if (Connection.con.State == ConnectionState.Closed)
+                    Connection.con.Open();
                 try
                 {
                     DialogResult dialogResult = MessageBox.Show($"Are You Sure Adding {txtCompanyName.Text}", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -110,7 +109,7 @@ namespace NORTHWND.Forms
                 }
                 finally
                 {
-                    con.Close();
+                    Connection.con.Close();
                     ListTheDataonDataGridView();
                     CleanTheControls();
                 }
@@ -132,10 +131,10 @@ namespace NORTHWND.Forms
         {
             if (!string.IsNullOrEmpty(txtSupplierID.Text))
             {
-                SqlCommand cmd = new SqlCommand("delete from Suppliers where SupplierID = @supplierID", con);
+                SqlCommand cmd = new SqlCommand("delete from Suppliers where SupplierID = @supplierID", Connection.con);
                 cmd.Parameters.AddWithValue("@supplierID", int.Parse(txtSupplierID.Text));
-                if (con.State == ConnectionState.Closed)
-                    con.Open();
+                if (Connection.con.State == ConnectionState.Closed)
+                    Connection.con.Open();
                 try
                 {
                     DialogResult dialogResult = MessageBox.Show($"Are You Sure Deleting {txtCompanyName.Text}", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -155,7 +154,7 @@ namespace NORTHWND.Forms
                 }
                 finally
                 {
-                    con.Close();
+                    Connection.con.Close();
                     ListTheDataonDataGridView();
                     CleanTheControls();
                 }
@@ -170,7 +169,7 @@ namespace NORTHWND.Forms
         {
             if (!(string.IsNullOrEmpty(txtCompanyName.Text) || string.IsNullOrEmpty(txtSupplierID.Text)) && !(txtCompanyName.Text.Length > 40 || txtContactName.Text.Length > 30 || txtContactTitle.Text.Length > 30 || txtAddress.Text.Length > 60 || txtCity.Text.Length > 15 || txtRegion.Text.Length > 15 || txtPostalCode.Text.Length > 10 || txtCountry.Text.Length > 15 || txtPhone.Text.Length > 24 || txtFax.Text.Length > 24))
             {
-                SqlCommand cmd = new SqlCommand("update Suppliers set CompanyName = @companyName, ContactName = @contactName, ContactTitle = @contactTitle, Address = @address, City = @city, Region = @region, PostalCode = @postalCode, Country = @country, Phone = @phone, Fax = @fax, HomePage = @homePage where SupplierID = @supplierID", con);
+                SqlCommand cmd = new SqlCommand("update Suppliers set CompanyName = @companyName, ContactName = @contactName, ContactTitle = @contactTitle, Address = @address, City = @city, Region = @region, PostalCode = @postalCode, Country = @country, Phone = @phone, Fax = @fax, HomePage = @homePage where SupplierID = @supplierID", Connection.con);
                 cmd.Parameters.AddWithValue("@supplierID", int.Parse(txtSupplierID.Text));
                 cmd.Parameters.AddWithValue("@companyName", txtCompanyName.Text);
                 cmd.Parameters.AddWithValue("@contactName", txtContactName.Text);
@@ -183,8 +182,8 @@ namespace NORTHWND.Forms
                 cmd.Parameters.AddWithValue("@phone", txtPhone.Text);
                 cmd.Parameters.AddWithValue("@fax", txtFax.Text);
                 cmd.Parameters.AddWithValue("@homePage", txtHomePage.Text);
-                if (con.State == ConnectionState.Closed)
-                    con.Open();
+                if (Connection.con.State == ConnectionState.Closed)
+                    Connection.con.Open();
                 try
                 {
                     DialogResult dialogResult = MessageBox.Show($"Are You Sure Update {txtCompanyName.Text}", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -204,7 +203,7 @@ namespace NORTHWND.Forms
                 }
                 finally
                 {
-                    con.Close();
+                    Connection.con.Close();
                     ListTheDataonDataGridView();
                     CleanTheControls();
                 }
@@ -237,7 +236,7 @@ namespace NORTHWND.Forms
                 if (!string.IsNullOrEmpty(txtSupplierIDSearch.Text) && int.TryParse(txtSupplierIDSearch.Text, out supplierID))
                 {
                     erpSupplierID.Clear();
-                    SqlCommand cmd = new SqlCommand("select * from Suppliers where SupplierID = @supplierID", con);
+                    SqlCommand cmd = new SqlCommand("select * from Suppliers where SupplierID = @supplierID", Connection.con);
                     cmd.Parameters.AddWithValue("@supplierID", supplierID);
                     SqlDataAdapter da = new SqlDataAdapter(cmd);
                     DataTable dt = new DataTable();
@@ -251,7 +250,7 @@ namespace NORTHWND.Forms
             }
             else if (rdbCompanyName.Checked)
             {
-                SqlCommand cmd = new SqlCommand("select * from Suppliers where CompanyName like @companyName", con);
+                SqlCommand cmd = new SqlCommand("select * from Suppliers where CompanyName like @companyName", Connection.con);
                 cmd.Parameters.AddWithValue("@companyName", "%" + txtCompanyNameSearch.Text + "%");
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
@@ -260,7 +259,7 @@ namespace NORTHWND.Forms
             }
             else if (rdbContactName.Checked)
             {
-                SqlCommand cmd = new SqlCommand("select * from Suppliers where ContactName like @contactName", con);
+                SqlCommand cmd = new SqlCommand("select * from Suppliers where ContactName like @contactName", Connection.con);
                 cmd.Parameters.AddWithValue("@contactName", "%" + txtContactNameSearch.Text + "%");
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
@@ -269,7 +268,7 @@ namespace NORTHWND.Forms
             }
             else if (rdbContactTitle.Checked)
             {
-                SqlCommand cmd = new SqlCommand("select * from Suppliers where ContactTitle like @contactTitle", con);
+                SqlCommand cmd = new SqlCommand("select * from Suppliers where ContactTitle like @contactTitle", Connection.con);
                 cmd.Parameters.AddWithValue("@contactTitle", "%" + txtContactTitleSearch.Text + "%");
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
@@ -278,7 +277,7 @@ namespace NORTHWND.Forms
             }
             else if (rdbCity.Checked)
             {
-                SqlCommand cmd = new SqlCommand("select * from Suppliers where City like @city", con);
+                SqlCommand cmd = new SqlCommand("select * from Suppliers where City like @city", Connection.con);
                 cmd.Parameters.AddWithValue("@city", "%" + txtCitySearch.Text + "%");
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
@@ -287,7 +286,7 @@ namespace NORTHWND.Forms
             }
             else if (rdbCountry.Checked)
             {
-                SqlCommand cmd = new SqlCommand("select * from Suppliers where Country like @country", con);
+                SqlCommand cmd = new SqlCommand("select * from Suppliers where Country like @country", Connection.con);
                 cmd.Parameters.AddWithValue("@country", "%" + txtCountrySearch.Text + "%");
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
@@ -296,7 +295,7 @@ namespace NORTHWND.Forms
             }
             else if (rdbPhone.Checked)
             {
-                SqlCommand cmd = new SqlCommand("select * from Suppliers where Phone like @phone", con);
+                SqlCommand cmd = new SqlCommand("select * from Suppliers where Phone like @phone", Connection.con);
                 cmd.Parameters.AddWithValue("@phone", "%" + TxtPhoneSearch.Text + "%");
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataTable dt = new DataTable();

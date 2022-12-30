@@ -19,14 +19,13 @@ namespace NORTHWND.Forms
             InitializeComponent();
             _frm = frm;
         }
-        SqlConnection con = new SqlConnection("Server=DESKTOP-A10URF2\\SQLEXPRESS;Database=NORTHWND;Trusted_Connection=True;");
 
         ErrorProvider erpRegiınDescription = new ErrorProvider(), erpRegionID = new ErrorProvider();
 
         private frmHomePage _frm;
         void ListTheDataonDataGridView()
         {
-            SqlCommand cmd = new SqlCommand("select * from Region", con);
+            SqlCommand cmd = new SqlCommand("select * from Region", Connection.con);
             SqlDataAdapter da = new SqlDataAdapter(cmd);
             DataTable dt = new DataTable();
             da.Fill(dt);
@@ -59,11 +58,11 @@ namespace NORTHWND.Forms
             if (!(string.IsNullOrEmpty(txtRegionID.Text) || string.IsNullOrEmpty(txtRegionDescription.Text)) && (int.TryParse(txtRegionID.Text, out regionID) || !(regionID <= 0)))
             {
 
-                SqlCommand cmd = new SqlCommand("insert into Region (RegionID, RegionDescription) values (@regionID, @regionDescription)", con);
+                SqlCommand cmd = new SqlCommand("insert into Region (RegionID, RegionDescription) values (@regionID, @regionDescription)", Connection.con);
                 cmd.Parameters.AddWithValue("@regionID", int.Parse(txtRegionID.Text));
                 cmd.Parameters.AddWithValue("@regionDescription", txtRegionDescription.Text);
-                if (con.State == ConnectionState.Closed)
-                    con.Open();
+                if (Connection.con.State == ConnectionState.Closed)
+                    Connection.con.Open();
                 try
                 {
                     DialogResult dialogResult = MessageBox.Show($"Are You Sure Adding {txtRegionDescription.Text}", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -83,7 +82,7 @@ namespace NORTHWND.Forms
                 }
                 finally
                 {
-                    con.Close();
+                    Connection.con.Close();
                     ListTheDataonDataGridView();
                     CleanTheControls();
                 }
@@ -105,10 +104,10 @@ namespace NORTHWND.Forms
         {
             if (!(string.IsNullOrEmpty(txtRegionID.Text)))
             {
-                SqlCommand cmd = new SqlCommand("delete from Region where RegionID = @regionID", con);
+                SqlCommand cmd = new SqlCommand("delete from Region where RegionID = @regionID", Connection.con);
                 cmd.Parameters.AddWithValue("@regionID", int.Parse(txtRegionID.Text));
-                if (con.State == ConnectionState.Closed)
-                    con.Open();
+                if (Connection.con.State == ConnectionState.Closed)
+                    Connection.con.Open();
                 try
                 {
                     DialogResult dialogResult = MessageBox.Show($"Are You Sure Delete {txtRegionDescription.Text}", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -128,7 +127,7 @@ namespace NORTHWND.Forms
                 }
                 finally
                 {
-                    con.Close();
+                    Connection.con.Close();
                     ListTheDataonDataGridView();
                     CleanTheControls();
                 }
@@ -146,11 +145,11 @@ namespace NORTHWND.Forms
             if (!(string.IsNullOrEmpty(txtRegionID.Text) || string.IsNullOrEmpty(txtRegionDescription.Text)) && (int.TryParse(txtRegionID.Text, out regionID) || !(regionID <= 0)))
             {
 
-                SqlCommand cmd = new SqlCommand("update Region set RegionDescription = @regionDescription where RegionID = @regionID", con);
+                SqlCommand cmd = new SqlCommand("update Region set RegionDescription = @regionDescription where RegionID = @regionID", Connection.con);
                 cmd.Parameters.AddWithValue("@regionID", int.Parse(txtRegionID.Text));
                 cmd.Parameters.AddWithValue("@regionDescription", txtRegionDescription.Text);
-                if (con.State == ConnectionState.Closed)
-                    con.Open();
+                if (Connection.con.State == ConnectionState.Closed)
+                    Connection.con.Open();
                 try
                 {
                     DialogResult dialogResult = MessageBox.Show($"Are You Sure Update {txtRegionDescription.Text}", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -170,7 +169,7 @@ namespace NORTHWND.Forms
                 }
                 finally
                 {
-                    con.Close();
+                    Connection.con.Close();
                     ListTheDataonDataGridView();
                     CleanTheControls();
                 }

@@ -19,13 +19,11 @@ namespace NORTHWND.Forms
             _frm = frm;
         }
 
-        SqlConnection con = new SqlConnection("Server=DESKTOP-A10URF2\\SQLEXPRESS;Database=NORTHWND;Trusted_Connection=True;");
-
         private frmHomePage _frm;
         
         void ListTheDataonDataGridView()
         {
-            SqlCommand cmd = new SqlCommand("select (e.FirstName + ' ' + e.LastName) as Employee, t.TerritoryDescription from EmployeeTerritories as et join Employees as e on e.EmployeeID = et.EmployeeID join Territories as t on et.TerritoryID = t.TerritoryID", con);
+            SqlCommand cmd = new SqlCommand("select (e.FirstName + ' ' + e.LastName) as Employee, t.TerritoryDescription from EmployeeTerritories as et join Employees as e on e.EmployeeID = et.EmployeeID join Territories as t on et.TerritoryID = t.TerritoryID", Connection.con);
             SqlDataAdapter da = new SqlDataAdapter(cmd);
             DataTable dt = new DataTable();
             da.Fill(dt);
@@ -33,7 +31,7 @@ namespace NORTHWND.Forms
         }
         void FillcbbEmployee()
         {
-            SqlCommand cmd = new SqlCommand("select EmployeeID, (FirstName + ' ' + LastName) as EmployeeName from Employees order by FirstName", con);
+            SqlCommand cmd = new SqlCommand("select EmployeeID, (FirstName + ' ' + LastName) as EmployeeName from Employees order by FirstName", Connection.con);
             SqlDataAdapter da = new SqlDataAdapter(cmd);
             DataTable dt = new DataTable();
             da.Fill(dt);
@@ -43,7 +41,7 @@ namespace NORTHWND.Forms
         }
         void FillcbbEmployeeSearch()
         {
-            SqlCommand cmd = new SqlCommand("select EmployeeID, (FirstName + ' ' + LastName) as EmployeeName from Employees order by FirstName", con);
+            SqlCommand cmd = new SqlCommand("select EmployeeID, (FirstName + ' ' + LastName) as EmployeeName from Employees order by FirstName", Connection.con);
             SqlDataAdapter da = new SqlDataAdapter(cmd);
             DataTable dt = new DataTable();
             da.Fill(dt);
@@ -53,7 +51,7 @@ namespace NORTHWND.Forms
         }
         void FillcbbTerritory()
         {
-            SqlCommand cmd = new SqlCommand("select TerritoryID, TerritoryDescription from Territories order by TerritoryDescription", con);
+            SqlCommand cmd = new SqlCommand("select TerritoryID, TerritoryDescription from Territories order by TerritoryDescription", Connection.con);
             SqlDataAdapter da = new SqlDataAdapter(cmd);
             DataTable dt = new DataTable();
             da.Fill(dt);
@@ -63,7 +61,7 @@ namespace NORTHWND.Forms
         }
         void FillcbbTerritorySearch()
         {
-            SqlCommand cmd = new SqlCommand("select TerritoryID, TerritoryDescription from Territories order by TerritoryDescription", con);
+            SqlCommand cmd = new SqlCommand("select TerritoryID, TerritoryDescription from Territories order by TerritoryDescription", Connection.con);
             SqlDataAdapter da = new SqlDataAdapter(cmd);
             DataTable dt = new DataTable();
             da.Fill(dt);
@@ -112,11 +110,11 @@ namespace NORTHWND.Forms
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
-            SqlCommand cmd = new SqlCommand("insert into EmployeeTerritories (EmployeeID, TerritoryID) values (@employeeID, @territoryID)", con);
+            SqlCommand cmd = new SqlCommand("insert into EmployeeTerritories (EmployeeID, TerritoryID) values (@employeeID, @territoryID)", Connection.con);
             cmd.Parameters.AddWithValue("@employeeID", cbbEmployee.SelectedValue);
             cmd.Parameters.AddWithValue("@territoryID", cbbTerritory.SelectedValue);
-            if (con.State == ConnectionState.Closed)
-                con.Open();
+            if (Connection.con.State == ConnectionState.Closed)
+                Connection.con.Open();
             try
             {
                 DialogResult dialogResult = MessageBox.Show($"Are You Sure Adding {cbbEmployee.SelectedText}", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -136,7 +134,7 @@ namespace NORTHWND.Forms
             }
             finally
             {
-                con.Close();
+                Connection.con.Close();
                 ListTheDataonDataGridView();
                 CleanTheControls();
             }
@@ -144,11 +142,11 @@ namespace NORTHWND.Forms
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
-            SqlCommand cmd = new SqlCommand("delete from EmployeeTerritories where EmployeeID = @employeeID and TerritoryID = @territoryID");
+            SqlCommand cmd = new SqlCommand("delete from EmployeeTerritories where EmployeeID = @employeeID and TerritoryID = @territoryID", Connection.con);
             cmd.Parameters.AddWithValue("@employeeID", cbbEmployee.SelectedValue);
             cmd.Parameters.AddWithValue("@territoryID", cbbTerritory.SelectedValue);
-            if (con.State == ConnectionState.Closed)
-                con.Open();
+            if (Connection.con.State == ConnectionState.Closed)
+                Connection.con.Open();
             try
             {
                 DialogResult dialogResult = MessageBox.Show($"Are You Sure Delete {cbbEmployee.SelectedText}", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -168,7 +166,7 @@ namespace NORTHWND.Forms
             }
             finally
             {
-                con.Close();
+                Connection.con.Close();
                 ListTheDataonDataGridView();
                 CleanTheControls();
             }
@@ -179,7 +177,7 @@ namespace NORTHWND.Forms
         {
             if (rdbEmployee.Checked)
             {
-                SqlCommand cmd = new SqlCommand("select (e.FirstName + ' ' + e.LastName) as Employee, t.TerritoryDescription from EmployeeTerritories as et join Employees as e on e.EmployeeID = et.EmployeeID join Territories as t on et.TerritoryID = t.TerritoryID where et.EmployeeID = @employeeID", con);
+                SqlCommand cmd = new SqlCommand("select (e.FirstName + ' ' + e.LastName) as Employee, t.TerritoryDescription from EmployeeTerritories as et join Employees as e on e.EmployeeID = et.EmployeeID join Territories as t on et.TerritoryID = t.TerritoryID where et.EmployeeID = @employeeID", Connection.con);
                 cmd.Parameters.AddWithValue("@employeeID", cbbEmployeeSearch.SelectedValue);
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
@@ -188,7 +186,7 @@ namespace NORTHWND.Forms
             }
             else if (rdbTerritory.Checked)
             {
-                SqlCommand cmd1 = new SqlCommand("select (e.FirstName + ' ' + e.LastName) as Employee, t.TerritoryDescription from EmployeeTerritories as et join Employees as e on e.EmployeeID = et.EmployeeID join Territories as t on et.TerritoryID = t.TerritoryID where et.TerritoryID = @territoryID", con);
+                SqlCommand cmd1 = new SqlCommand("select (e.FirstName + ' ' + e.LastName) as Employee, t.TerritoryDescription from EmployeeTerritories as et join Employees as e on e.EmployeeID = et.EmployeeID join Territories as t on et.TerritoryID = t.TerritoryID where et.TerritoryID = @territoryID", Connection.con);
                 cmd1.Parameters.AddWithValue("@territoryID", cbbTerritorySearch.SelectedValue);
                 SqlDataAdapter da1 = new SqlDataAdapter(cmd1);
                 DataTable dt1 = new DataTable();

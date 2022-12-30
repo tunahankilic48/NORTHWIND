@@ -1,7 +1,7 @@
 # NORTHWND_AdoNet
 An AdoNet example by using Northwind database
 
-This This project is an example of using the Microsoft Northwind database to be able to apply ado net commands.
+This This project is an example of appling ado net commands by using the Microsoft Northwind database. .Net Core 6.0 was used. System.Data.SqlClient package was installed by using NuGet.
 
 The Northwind database can be downloaded from https://learn.microsoft.com/en-gb/dotnet/framework/data/adonet/sql/linq/downloading-sample-databases official web site of microsoft.
 In addition, SQL server and SQL management strudio can be downloaded from https://www.microsoft.com/tr-tr/sql-server/sql-server-downloads.

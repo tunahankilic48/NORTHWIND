@@ -13,6 +13,7 @@ namespace NORTHWND.Forms
 {
     public partial class frmCustomers : Form
     {
+        // to do Bulunmayan ID girildiğinde uyarı versin
         public frmCustomers(frmHomePage frm)
         {
             InitializeComponent();
@@ -37,6 +38,13 @@ namespace NORTHWND.Forms
                     ((TextBox)control).Clear();
                 }
             }
+            foreach (Control control in this.groupBox2.Controls)
+            {
+                if (control is TextBox)
+                {
+                    ((TextBox)control).Clear();
+                }
+            }
         }
         private void frmCustomers_Load(object sender, EventArgs e)
         {
@@ -45,13 +53,11 @@ namespace NORTHWND.Forms
             CleanTheControls();
 
         }
-
         private void btnX_Click(object sender, EventArgs e)
         {
             _frm.Show();
             this.Close();
         }
-
         private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             txtCustomerID.Text = dataGridView1.CurrentRow.Cells["CustomerID"].Value.ToString();
@@ -66,7 +72,6 @@ namespace NORTHWND.Forms
             txtPhone.Text = dataGridView1.CurrentRow.Cells["Phone"].Value.ToString();
             txtFax.Text = dataGridView1.CurrentRow.Cells["Fax"].Value.ToString();
         }
-
         private void btnAdd_Click(object sender, EventArgs e)
         {
             if (!(txtFax.Text.Length > 24 || txtPhone.Text.Length > 24 || txtCountry.Text.Length > 15 || txtPostalCode.Text.Length > 10 || txtRegion.Text.Length > 15 || txtCity.Text.Length > 15 || txtAddress.Text.Length > 60 || txtContactTitle.Text.Length > 30 || txtContactName.Text.Length > 30 || txtCompanyName.Text.Length > 40 || txtCustomerID.Text.Length != 5 || string.IsNullOrEmpty(txtCustomerID.Text) || string.IsNullOrEmpty(txtCompanyName.Text)))
@@ -120,7 +125,6 @@ namespace NORTHWND.Forms
             }
 
         }
-
         private void btnDelete_Click(object sender, EventArgs e)
         {
             if (!(string.IsNullOrEmpty(txtCustomerID.Text)))
@@ -159,7 +163,6 @@ namespace NORTHWND.Forms
             }
 
         }
-
         private void btnUpdate_Click(object sender, EventArgs e)
         {
             if (!(txtFax.Text.Length > 24 || txtPhone.Text.Length > 24 || txtCountry.Text.Length > 15 || txtPostalCode.Text.Length > 10 || txtRegion.Text.Length > 15 || txtCity.Text.Length > 15 || txtAddress.Text.Length > 60 || txtContactTitle.Text.Length > 30 || txtContactName.Text.Length > 30 || txtCompanyName.Text.Length > 40 || txtCustomerID.Text.Length != 5 || string.IsNullOrEmpty(txtCustomerID.Text) || string.IsNullOrEmpty(txtCompanyName.Text)))
@@ -212,12 +215,10 @@ namespace NORTHWND.Forms
                     MessageBox.Show("Please check the errors and try again!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
         private void btnListallCustomers_Click(object sender, EventArgs e)
         {
             ListTheDataonDataGridView();
         }
-
         private void btnSearch_Click(object sender, EventArgs e)
         {
             if (rdbCustomerID.Checked)
@@ -280,7 +281,6 @@ namespace NORTHWND.Forms
             }
 
         }
-
         private void txtCustomerID_TextChanged(object sender, EventArgs e)
         {
             if (txtCustomerID.Text.Length != 5)
@@ -292,7 +292,6 @@ namespace NORTHWND.Forms
                 erpCustomerID.Clear();
             }
         }
-
         private void txtCompanyName_TextChanged(object sender, EventArgs e)
         {
             if (txtCompanyName.Text.Length > 40)
@@ -304,7 +303,6 @@ namespace NORTHWND.Forms
                 erpCompanyName.Clear();
             }
         }
-
         private void txtContactName_TextChanged(object sender, EventArgs e)
         {
             if (txtContactName.Text.Length > 30)
@@ -316,7 +314,6 @@ namespace NORTHWND.Forms
                 erpContactName.Clear();
             }
         }
-
         private void txtContactTitle_TextChanged(object sender, EventArgs e)
         {
             if (txtContactTitle.Text.Length > 30)
@@ -328,7 +325,6 @@ namespace NORTHWND.Forms
                 erpContactTitle.Clear();
             }
         }
-
         private void txtAddress_TextChanged(object sender, EventArgs e)
         {
             if (txtAddress.Text.Length > 60)
@@ -340,7 +336,6 @@ namespace NORTHWND.Forms
                 erpAddress.Clear();
             }
         }
-
         private void txtCity_TextChanged(object sender, EventArgs e)
         {
             if (txtCity.Text.Length > 15)
@@ -352,7 +347,6 @@ namespace NORTHWND.Forms
                 erpCity.Clear();
             }
         }
-
         private void txtRegion_TextChanged(object sender, EventArgs e)
         {
             if (txtRegion.Text.Length > 15)
@@ -364,7 +358,6 @@ namespace NORTHWND.Forms
                 erpRegion.Clear();
             }
         }
-
         private void txtPostalCode_TextChanged(object sender, EventArgs e)
         {
             if (txtPostalCode.Text.Length > 10)
@@ -376,7 +369,6 @@ namespace NORTHWND.Forms
                 erpPostalCode.Clear();
             }
         }
-
         private void txtCountry_TextChanged(object sender, EventArgs e)
         {
             if (txtCountry.Text.Length > 15)
@@ -388,7 +380,6 @@ namespace NORTHWND.Forms
                 erpCountry.Clear();
             }
         }
-
         private void txtPhone_TextChanged(object sender, EventArgs e)
         {
             if (txtPhone.Text.Length > 24)
@@ -400,7 +391,6 @@ namespace NORTHWND.Forms
                 erpPhone.Clear();
             }
         }
-
         private void txtFax_TextChanged(object sender, EventArgs e)
         {
             if (txtFax.Text.Length > 24)

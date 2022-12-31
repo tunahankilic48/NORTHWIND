@@ -86,7 +86,6 @@ namespace NORTHWND.Forms
                 }
             }
         }
-
         private void frmEmployees_Load(object sender, EventArgs e)
         {
             ListTheDataonDataGridView();
@@ -94,13 +93,11 @@ namespace NORTHWND.Forms
             FillcbbReportstoSearch();
             CleanTheControls();
         }
-
         private void btnX_Click(object sender, EventArgs e)
         {
             _frm.Show();
             this.Close();
         }
-
         private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             txtEmployeeID.Text = dataGridView1.CurrentRow.Cells["EmployeeID"].Value.ToString();
@@ -132,7 +129,6 @@ namespace NORTHWND.Forms
             else
                 cbbReportsTo.SelectedValue = -1;
         }
-
         private void btnAdd_Click(object sender, EventArgs e)
         {
             if (!(dtpBirthDate.Value > DateTime.Now || dtpHireDate.Value > DateTime.Now || txtAddress.Text.Length > 60 || txtCity.Text.Length > 15 || txtRegion.Text.Length > 15 || txtPostalCode.Text.Length > 10 || txtCountry.Text.Length > 15 || txtHomePhone.Text.Length > 24 || txtExtension.Text.Length > 4 || txtTitleofCourtesy.Text.Length > 25 || txtTitle.Text.Length > 30 || txtLastName.Text.Length > 20 || txtFirstName.Text.Length > 10 || string.IsNullOrEmpty(txtFirstName.Text) || string.IsNullOrEmpty(txtLastName.Text)))
@@ -187,10 +183,8 @@ namespace NORTHWND.Forms
                 }
                 else
                     MessageBox.Show("Please check the errors and try again!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
             }
         }
-
         private void btnDelete_Click(object sender, EventArgs e)
         {
             if (!(string.IsNullOrEmpty(txtEmployeeID.Text)))
@@ -227,9 +221,7 @@ namespace NORTHWND.Forms
             {
                 MessageBox.Show("Employee ID is neccessary for deletion", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-
         }
-
         private void btnUpdate_Click(object sender, EventArgs e)
         {
             if (!(dtpBirthDate.Value > DateTime.Now || dtpHireDate.Value > DateTime.Now || txtAddress.Text.Length > 60 || txtCity.Text.Length > 15 || txtRegion.Text.Length > 15 || txtPostalCode.Text.Length > 10 || txtCountry.Text.Length > 15 || txtHomePhone.Text.Length > 24 || txtExtension.Text.Length > 4 || txtTitleofCourtesy.Text.Length > 25 || txtTitle.Text.Length > 30 || txtLastName.Text.Length > 20 || txtFirstName.Text.Length > 10 || string.IsNullOrEmpty(txtFirstName.Text) || string.IsNullOrEmpty(txtLastName.Text)) && string.IsNullOrEmpty(txtEmployeeID.Text))
@@ -288,12 +280,11 @@ namespace NORTHWND.Forms
 
             }
         }
-
         private void btnSearch_Click(object sender, EventArgs e)
         {
             if (rdbEmployeeID.Checked)
             {
-                if (!(int.TryParse(txtEmployeeIDSearch.Text, out int employeeID)))
+                if (int.TryParse(txtEmployeeIDSearch.Text, out int employeeID))
                 {
                     erpEmployeeID.Clear();
                     SqlCommand cmd = new SqlCommand("select e.EmployeeID, e.FirstName, e.LastName, e.Title, e.TitleOfCourtesy, e.BirthDate, e.HireDate, e.Address, e.City, e.Region, e.PostalCode, e.Country, e.HomePhone, e.Extension, e.Notes, (em.FirstName + ' ' + em.LastName) as ReportsTo, e.ReportsTo as Reportssto from Employees as e left join Employees as em on e.ReportsTo = em.EmployeeID where e.EmployeeID = @employeeID", Connection.con);
@@ -394,7 +385,6 @@ namespace NORTHWND.Forms
                 MessageBox.Show("You should choose one of the search options", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
         private void btnListallEmployees_Click(object sender, EventArgs e)
         {
             ListTheDataonDataGridView();

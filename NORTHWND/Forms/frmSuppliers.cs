@@ -31,20 +31,6 @@ namespace NORTHWND.Forms
             da.Fill(dt);
             dataGridView1.DataSource = dt;
         }
-        void CleanTheControls()
-        {
-            foreach (Control control in this.groupBox1.Controls)
-            {
-                if (control is TextBox)
-                {
-                    ((TextBox)control).Clear();
-                }
-                //else if (control is ComboBox)
-                //{
-                //    ((DateTimePicker)control).Value = DateTime.Now;
-                //}
-            }
-        }
         private void frmSuppliers_Load(object sender, EventArgs e)
         {
             ListTheDataonDataGridView();
@@ -111,7 +97,7 @@ namespace NORTHWND.Forms
                 {
                     Connection.con.Close();
                     ListTheDataonDataGridView();
-                    CleanTheControls();
+                    ExtensionMethod.CleanTheControls(this);
                 }
             }
             else
@@ -156,7 +142,7 @@ namespace NORTHWND.Forms
                 {
                     Connection.con.Close();
                     ListTheDataonDataGridView();
-                    CleanTheControls();
+                    ExtensionMethod.CleanTheControls(this);
                 }
             }
             else
@@ -205,7 +191,7 @@ namespace NORTHWND.Forms
                 {
                     Connection.con.Close();
                     ListTheDataonDataGridView();
-                    CleanTheControls();
+                    ExtensionMethod.CleanTheControls(this);
                 }
             }
             else

@@ -69,23 +69,6 @@ namespace NORTHWND.Forms
             cbbTerritorySearch.DisplayMember = "TerritoryDescription";
             cbbTerritorySearch.DataSource = dt;
         }
-        void CleanTheControls()
-        {
-            foreach (Control control in this.groupBox1.Controls)
-            {
-                if (control is ComboBox)
-                {
-                    ((ComboBox)control).SelectedIndex = 0;
-                }
-            }
-            foreach (Control control in this.groupBox2.Controls)
-            {
-                if (control is ComboBox)
-                {
-                    ((ComboBox)control).SelectedIndex = 0;
-                }
-            }
-        }
         private void frmEmployeeTerritories_Load(object sender, EventArgs e)
         {
             ListTheDataonDataGridView();
@@ -93,7 +76,7 @@ namespace NORTHWND.Forms
             FillcbbEmployee();
             FillcbbEmployeeSearch();
             FillcbbTerritorySearch();
-            CleanTheControls();
+            ExtensionMethod.CleanTheControls(this);
         }
 
         private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -136,7 +119,7 @@ namespace NORTHWND.Forms
             {
                 Connection.con.Close();
                 ListTheDataonDataGridView();
-                CleanTheControls();
+                ExtensionMethod.CleanTheControls(this);
             }
         }
 
@@ -168,7 +151,7 @@ namespace NORTHWND.Forms
             {
                 Connection.con.Close();
                 ListTheDataonDataGridView();
-                CleanTheControls();
+                ExtensionMethod.CleanTheControls(this);
             }
         
         }

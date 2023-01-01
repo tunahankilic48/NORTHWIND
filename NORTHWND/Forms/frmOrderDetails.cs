@@ -51,20 +51,6 @@ namespace NORTHWND.Forms
             cbbProductSearch.DisplayMember = "ProductName";
             cbbProductSearch.DataSource = dt;
         }
-        void CleanTheControls()
-        {
-            foreach (Control control in this.groupBox1.Controls)
-            {
-                if (control is TextBox)
-                {
-                    ((TextBox)control).Clear();
-                }
-                else if (control is ComboBox)
-                {
-                    ((ComboBox)control).SelectedIndex = 1;
-                }
-            }
-        }
         private void frmOrderDetails_Load(object sender, EventArgs e)
         {
             ListTheDataonDataGridView();
@@ -118,7 +104,7 @@ namespace NORTHWND.Forms
                 {
                     Connection.con.Close();
                     ListTheDataonDataGridView();
-                    CleanTheControls();
+                    ExtensionMethod.CleanTheControls(this);
                 }
             }
             else
@@ -162,7 +148,7 @@ namespace NORTHWND.Forms
                 {
                     Connection.con.Close();
                     ListTheDataonDataGridView();
-                    CleanTheControls();
+                    ExtensionMethod.CleanTheControls(this);
                 }
             }
             else

@@ -53,45 +53,12 @@ namespace NORTHWND.Forms
             cbbReportstoSearch.DisplayMember = "EmployeeName";
             cbbReportstoSearch.DataSource = dt;
         }
-        void CleanTheControls()
-        {
-            foreach (Control control in this.groupBox1.Controls)
-            {
-                if (control is TextBox)
-                {
-                    ((TextBox)control).Clear();
-                }
-                else if (control is DateTimePicker)
-                {
-                    ((DateTimePicker)control).Value = DateTime.Now;
-                }
-                else if (control is ComboBox)
-                {
-                    ((ComboBox)control).SelectedIndex = 0;
-                }
-            }
-            foreach (Control control in this.groupBox2.Controls)
-            {
-                if (control is TextBox)
-                {
-                    ((TextBox)control).Clear();
-                }
-                else if (control is DateTimePicker)
-                {
-                    ((DateTimePicker)control).Value = DateTime.Now;
-                }
-                else if (control is ComboBox)
-                {
-                    ((ComboBox)control).SelectedIndex = 0;
-                }
-            }
-        }
         private void frmEmployees_Load(object sender, EventArgs e)
         {
             ListTheDataonDataGridView();
             FillcbbReportsTo();
             FillcbbReportstoSearch();
-            CleanTheControls();
+            ExtensionMethod.CleanTheControls(this);
         }
         private void btnX_Click(object sender, EventArgs e)
         {
@@ -172,7 +139,7 @@ namespace NORTHWND.Forms
                 {
                     Connection.con.Close();
                     ListTheDataonDataGridView();
-                    CleanTheControls();
+                    ExtensionMethod.CleanTheControls(this);
                 }
             }
             else
@@ -214,7 +181,7 @@ namespace NORTHWND.Forms
                 {
                     Connection.con.Close();
                     ListTheDataonDataGridView();
-                    CleanTheControls();
+                    ExtensionMethod.CleanTheControls(this);
                 }
             }
             else
@@ -266,7 +233,7 @@ namespace NORTHWND.Forms
                 {
                     Connection.con.Close();
                     ListTheDataonDataGridView();
-                    CleanTheControls();
+                    ExtensionMethod.CleanTheControls(this);
                 }
             }
             else

@@ -1,13 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
+﻿using System.Data;
 using System.Data.SqlClient;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace NORTHWND.Forms
 {
@@ -52,38 +44,12 @@ namespace NORTHWND.Forms
             cbbRegionSearch.DisplayMember = "RegionDescription";
             cbbRegionSearch.DataSource = dt;
         }
-
-        void CleanTheControls()
-        {
-            foreach (Control control in this.groupBox1.Controls)
-            {
-                if (control is TextBox)
-                {
-                    ((TextBox)control).Clear();
-                }
-                else if (control is ComboBox)
-                {
-                    ((ComboBox)control).SelectedIndex = 0;
-                }
-            }
-            foreach (Control control in this.groupBox2.Controls)
-            {
-                if (control is TextBox)
-                {
-                    ((TextBox)control).Clear();
-                }
-                else if (control is ComboBox)
-                {
-                    ((ComboBox)control).SelectedIndex = 0;
-                }
-            }
-        }
         private void frmTerritories_Load(object sender, EventArgs e)
         {
             ListTheDataonDataGridView();
             FillcbbRegion();
             FillcbbRegionSearch();
-            CleanTheControls();
+            ExtensionMethod.CleanTheControls(this);
         }
 
         private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -130,7 +96,7 @@ namespace NORTHWND.Forms
                 {
                     Connection.con.Close();
                     ListTheDataonDataGridView();
-                    CleanTheControls();
+                    ExtensionMethod.CleanTheControls(this);
                 }
             }
             else
@@ -171,7 +137,7 @@ namespace NORTHWND.Forms
                 {
                     Connection.con.Close();
                     ListTheDataonDataGridView();
-                    CleanTheControls();
+                    ExtensionMethod.CleanTheControls(this);
                 }
             }
             else
@@ -212,7 +178,7 @@ namespace NORTHWND.Forms
                 {
                     Connection.con.Close();
                     ListTheDataonDataGridView();
-                    CleanTheControls();
+                    ExtensionMethod.CleanTheControls(this);
                 }
             }
             else

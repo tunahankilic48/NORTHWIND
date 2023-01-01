@@ -30,16 +30,6 @@ namespace NORTHWND.Forms
             da.Fill(dt);
             dataGridView1.DataSource = dt;
         }
-        void CleanTheControls()
-        {
-            foreach (Control control in this.groupBox1.Controls)
-            {
-                if (control is TextBox)
-                {
-                    ((TextBox)control).Clear();
-                }
-            }
-        }
         private void frmCategories_Load(object sender, EventArgs e)
         {
             ListTheDataonDataGridView();
@@ -81,7 +71,7 @@ namespace NORTHWND.Forms
                 {
                     Connection.con.Close();
                     ListTheDataonDataGridView();
-                    CleanTheControls();
+                    ExtensionMethod.CleanTheControls(this);
                 }
             }
             else
@@ -116,7 +106,7 @@ namespace NORTHWND.Forms
                 {
                     Connection.con.Close();
                     ListTheDataonDataGridView();
-                    CleanTheControls();
+                    ExtensionMethod.CleanTheControls(this);
                 }
             }
             else
@@ -152,7 +142,7 @@ namespace NORTHWND.Forms
                 {
                     Connection.con.Close();
                     ListTheDataonDataGridView();
-                    CleanTheControls();
+                    ExtensionMethod.CleanTheControls(this);
                 }
             }
             else
